@@ -1,0 +1,100 @@
+name: Sync SDK Versions
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Daily at 6am UTC
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  sync-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest SDK versions
+        id: versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Fetch latest release/tag for each SDK
+          get_version() {
+            local repo=$1
+            # Try releases first, fall back to tags
+            version=$(gh api repos/Mostly-Good-Metrics/$repo/releases/latest --jq '.tag_name' 2>/dev/null || \
+                      gh api repos/Mostly-Good-Metrics/$repo/tags --jq '.[0].name' 2>/dev/null || \
+                      echo "")
+            # Strip 'v' prefix if present
+            echo "${version#v}"
+          }
+
+          SWIFT_VERSION=$(get_version "mostly-good-metrics-swift-sdk")
+          ANDROID_VERSION=$(get_version "mostly-good-metrics-android-sdk")
+          REACT_NATIVE_VERSION=$(get_version "mostly-good-metrics-react-native")
+          JS_VERSION=$(get_version "mostly-good-metrics-js")
+          FLUTTER_VERSION=$(get_version "mostly-good-metrics-flutter-sdk")
+          CAPACITOR_VERSION=$(get_version "mostly-good-metrics-capacitor")
+
+          echo "swift=$SWIFT_VERSION" >> $GITHUB_OUTPUT
+          echo "android=$ANDROID_VERSION" >> $GITHUB_OUTPUT
+          echo "react_native=$REACT_NATIVE_VERSION" >> $GITHUB_OUTPUT
+          echo "js=$JS_VERSION" >> $GITHUB_OUTPUT
+          echo "flutter=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
+          echo "capacitor=$CAPACITOR_VERSION" >> $GITHUB_OUTPUT
+
+          echo "### SDK Versions" >> $GITHUB_STEP_SUMMARY
+          echo "| SDK | Version |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Swift | $SWIFT_VERSION |" >> $GITHUB_STEP_SUMMARY
+          echo "| Android | $ANDROID_VERSION |" >> $GITHUB_STEP_SUMMARY
+          echo "| React Native | $REACT_NATIVE_VERSION |" >> $GITHUB_STEP_SUMMARY
+          echo "| JavaScript | $JS_VERSION |" >> $GITHUB_STEP_SUMMARY
+          echo "| Flutter | $FLUTTER_VERSION |" >> $GITHUB_STEP_SUMMARY
+          echo "| Capacitor | $CAPACITOR_VERSION |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Update version references in docs
+        run: |
+          # Swift - Package.swift format: from: "X.X.X"
+          if [ -n "${{ steps.versions.outputs.swift }}" ]; then
+            find docs -name "*.md" -exec sed -i \
+              's|mostly-good-metrics-swift-sdk", from: "[^"]*"|mostly-good-metrics-swift-sdk", from: "${{ steps.versions.outputs.swift }}"|g' {} +
+          fi
+
+          # Android - Gradle format: android-sdk:X.X.X
+          if [ -n "${{ steps.versions.outputs.android }}" ]; then
+            find docs -name "*.md" -exec sed -i \
+              's|mostly-good-metrics-android-sdk:[^")*]*|mostly-good-metrics-android-sdk:${{ steps.versions.outputs.android }}|g' {} +
+          fi
+
+          # Flutter - pubspec format: ^X.X.X
+          if [ -n "${{ steps.versions.outputs.flutter }}" ]; then
+            find docs -name "*.md" -exec sed -i \
+              's|mostly_good_metrics_flutter: \^[0-9.]*|mostly_good_metrics_flutter: ^${{ steps.versions.outputs.flutter }}|g' {} +
+          fi
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            git diff --stat
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Update SDK versions
+
+          - Swift: ${{ steps.versions.outputs.swift }}
+          - Android: ${{ steps.versions.outputs.android }}
+          - Flutter: ${{ steps.versions.outputs.flutter }}
+
+          🤖 Automated by GitHub Actions"
+          git push
