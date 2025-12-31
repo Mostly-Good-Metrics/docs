@@ -1,0 +1,66 @@
+{
+  "tagline": "Simple analytics for products that ship",
+  "description": "No complex setup, no data warehouses, no SQL required. Just drop in an SDK and start understanding how people use your app.",
+  "features": {
+    "offlineSupport": {
+      "title": "Offline Support",
+      "description": "Events persist locally and sync when back online"
+    },
+    "batching": {
+      "title": "Smart Batching",
+      "description": "Events are grouped for efficient network usage"
+    },
+    "autoRetry": {
+      "title": "Automatic Retries",
+      "description": "Failed requests are retried automatically"
+    },
+    "lifecycleTracking": {
+      "title": "Lifecycle Tracking",
+      "description": "App opens, installs, and updates are tracked for you"
+    }
+  },
+  "sdks": {
+    "swift": {
+      "name": "Swift",
+      "platforms": "iOS, macOS, tvOS, watchOS, visionOS",
+      "packageManager": "Swift Package Manager"
+    },
+    "android": {
+      "name": "Android",
+      "platforms": "Android",
+      "packageManager": "Gradle"
+    },
+    "reactNative": {
+      "name": "React Native",
+      "platforms": "iOS, Android",
+      "packageManager": "npm"
+    },
+    "javascript": {
+      "name": "JavaScript",
+      "platforms": "Web",
+      "packageManager": "npm"
+    },
+    "flutter": {
+      "name": "Flutter",
+      "platforms": "iOS, Android, Web, macOS, Windows, Linux",
+      "packageManager": "pub"
+    },
+    "capacitor": {
+      "name": "Capacitor",
+      "platforms": "iOS, Android, Web",
+      "packageManager": "npm"
+    }
+  },
+  "cta": {
+    "getStarted": "Get Started",
+    "viewDocs": "View Documentation",
+    "dashboard": "Go to Dashboard",
+    "signUp": "Sign Up Free"
+  },
+  "urls": {
+    "docs": "https://docs.mostlygoodmetrics.com",
+    "dashboard": "https://app.mostlygoodmetrics.com",
+    "github": "https://github.com/Mostly-Good-Metrics",
+    "website": "https://mostlygoodmetrics.com"
+  }
+}
