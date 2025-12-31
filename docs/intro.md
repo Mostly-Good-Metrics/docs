@@ -1,19 +1,24 @@
 ---
 sidebar_position: 1
 slug: /
+title: Welcome
 ---
 
-# Getting Started
+# Mostly Good Metrics
 
-Drop in an SDK, track events, and see funnels and retention without extra setup.
+Simple analytics for products that ship.
 
-## Quick Start
+No complex setup, no data warehouses, no SQL required. Just drop in an SDK and start understanding how people use your app.
 
-### 1. Get Your API Key
+---
 
-Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and create a project. Your API key will look like `mgm_proj_xxxx`.
+## Get Started in 5 Minutes
 
-### 2. Install an SDK
+### 1. Create a project
+
+Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and create a project. You'll get an API key that looks like `mgm_proj_xxxx`.
+
+### 2. Install the SDK
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -67,7 +72,7 @@ npm install @mostly-good-metrics/capacitor
   </TabItem>
 </Tabs>
 
-### 3. Initialize and Track
+### 3. Start tracking
 
 <Tabs>
   <TabItem value="swift" label="Swift" default>
@@ -196,21 +201,21 @@ MostlyGoodMetrics.identify('user_123');
   </TabItem>
 </Tabs>
 
-That's it! Events are automatically batched and sent. View them in your [dashboard](https://app.mostlygoodmetrics.com).
+That's it! Your events will appear in the [dashboard](https://app.mostlygoodmetrics.com) within seconds.
 
-## What Happens Automatically
+---
 
-All SDKs automatically:
+## What the SDKs handle for you
 
-- **Persist events** locally, surviving app restarts
-- **Batch events** for efficient network usage
-- **Flush on interval** (default: every 30 seconds)
-- **Flush on background** when the app goes to background
-- **Retry on failure** for network errors
-- **Track lifecycle events** like app open, install, and update
+- **Offline support** — events persist locally and sync when back online
+- **Batching** — events are grouped for efficient network usage
+- **Automatic retries** — failed requests are retried automatically
+- **Lifecycle tracking** — app opens, installs, and updates are tracked for you
 
-## Next Steps
+---
 
-- Read the [SDK documentation](/sdks/swift) for your platform
-- Learn about [tracking events](/guides/tracking-events)
-- Understand [reserved events](/guides/reserved-events) that are tracked automatically
+## Learn more
+
+- [SDK guides](/sdks/swift) — detailed docs for each platform
+- [Tracking events](/guides/tracking-events) — best practices for event naming
+- [Reserved events](/guides/reserved-events) — events tracked automatically
