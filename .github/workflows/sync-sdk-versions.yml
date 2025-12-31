@@ -54,7 +54,20 @@ jobs:
           echo "| Flutter | $FLUTTER_VERSION |" >> $GITHUB_STEP_SUMMARY
           echo "| Capacitor | $CAPACITOR_VERSION |" >> $GITHUB_STEP_SUMMARY
 
-      - name: Update version references in docs
+      - name: Update versions.json
+        run: |
+          cat > versions.json << ENDJSON
+          {
+            "swift": "${{ steps.versions.outputs.swift }}",
+            "android": "${{ steps.versions.outputs.android }}",
+            "reactNative": "${{ steps.versions.outputs.react_native }}",
+            "javascript": "${{ steps.versions.outputs.js }}",
+            "flutter": "${{ steps.versions.outputs.flutter }}",
+            "capacitor": "${{ steps.versions.outputs.capacitor }}"
+          }
+          ENDJSON
+
+      - name: Update version references in code blocks
         run: |
           # Swift - Package.swift format: from: "X.X.X"
           if [ -n "${{ steps.versions.outputs.swift }}" ]; then
@@ -92,9 +105,12 @@ jobs:
           git add -A
           git commit -m "Update SDK versions
 
-          - Swift: ${{ steps.versions.outputs.swift }}
-          - Android: ${{ steps.versions.outputs.android }}
-          - Flutter: ${{ steps.versions.outputs.flutter }}
+          Swift: ${{ steps.versions.outputs.swift }}
+          Android: ${{ steps.versions.outputs.android }}
+          React Native: ${{ steps.versions.outputs.react_native }}
+          JavaScript: ${{ steps.versions.outputs.js }}
+          Flutter: ${{ steps.versions.outputs.flutter }}
+          Capacitor: ${{ steps.versions.outputs.capacitor }}
 
           🤖 Automated by GitHub Actions"
           git push

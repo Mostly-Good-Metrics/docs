@@ -1,11 +1,16 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import sdkVersions from './versions.json';
 
 const config: Config = {
   title: 'Mostly Good Metrics',
   tagline: 'Simple analytics for products that ship',
   favicon: 'img/favicon.ico',
+
+  customFields: {
+    sdkVersions,
+  },
 
   future: {
     v4: true,
