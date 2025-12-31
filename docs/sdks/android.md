@@ -17,7 +17,7 @@ A lightweight Android SDK for tracking analytics events.
 
 ```kotlin
 dependencies {
-    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:1.0.0")
+    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.4")
 }
 ```
 

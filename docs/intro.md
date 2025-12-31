@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
 
 ```swift
 // Package.swift
-.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "1.0.0")
+.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.5.5")
 ```
 
   </TabItem>
@@ -36,7 +36,7 @@ import TabItem from '@theme/TabItem';
 
 ```kotlin
 // build.gradle.kts
-implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:1.0.0")
+implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.4")
 ```
 
   </TabItem>
@@ -59,7 +59,7 @@ npm install @mostly-good-metrics/javascript
 ```yaml
 # pubspec.yaml
 dependencies:
-  mostly_good_metrics_flutter: ^0.1.0
+  mostly_good_metrics_flutter: ^0.2.4
 ```
 
   </TabItem>
