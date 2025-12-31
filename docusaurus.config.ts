@@ -1,7 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import sdkVersions from './versions.json';
+import sdkVersions from './sdk-versions.json';
 
 const config: Config = {
   title: 'Mostly Good Metrics',
