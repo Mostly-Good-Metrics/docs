@@ -1,7 +1,48 @@
 {
   "tagline": "Simple analytics for products that ship",
   "description": "No complex setup, no data warehouses, no SQL required. Just drop in an SDK and start understanding how people use your app.",
-  "features": {
+
+  "plans": {
+    "free": {
+      "name": "Free",
+      "price_monthly": 0,
+      "events_limit": 100000,
+      "features": [
+        "50K-100K events/month",
+        "1 project",
+        "30 day data retention",
+        "Email support"
+      ]
+    },
+    "starter": {
+      "name": "Starter",
+      "price_monthly": 12,
+      "events_limit": 500000,
+      "features": [
+        "500K events/month",
+        "3 projects",
+        "90 day data retention",
+        "Metrics by property",
+        "Ask AI (100/day)",
+        "Email support"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price_monthly": 49,
+      "events_limit": 5000000,
+      "features": [
+        "5M events/month",
+        "Unlimited projects",
+        "365 day data retention",
+        "Metrics by property",
+        "Ask AI (500/day)",
+        "Email support"
+      ]
+    }
+  },
+
+  "sdk_features": {
     "offlineSupport": {
       "title": "Offline Support",
       "description": "Events persist locally and sync when back online"
@@ -19,6 +60,7 @@
       "description": "App opens, installs, and updates are tracked for you"
     }
   },
+
   "sdks": {
     "swift": {
       "name": "Swift",
@@ -51,16 +93,27 @@
       "packageManager": "npm"
     }
   },
+
   "cta": {
     "getStarted": "Get Started",
     "viewDocs": "View Documentation",
     "dashboard": "Go to Dashboard",
-    "signUp": "Sign Up Free"
+    "signUp": "Sign Up Free",
+    "upgradeStarter": "Upgrade to Starter",
+    "upgradePro": "Upgrade to Pro",
+    "contactSales": "Contact Sales"
   },
+
   "urls": {
     "docs": "https://docs.mostlygoodmetrics.com",
     "dashboard": "https://app.mostlygoodmetrics.com",
     "github": "https://github.com/Mostly-Good-Metrics",
-    "website": "https://mostlygoodmetrics.com"
+    "website": "https://mostlygoodmetrics.com",
+    "marketingApi": "https://app.mostlygoodmetrics.com/api/marketing-data"
+  },
+
+  "meta": {
+    "ogTitle": "Mostly Good Metrics – Track events, funnels, and retention",
+    "metaDescription": "Drop in an SDK, track events, and see funnels and retention without extra setup. Lightweight product analytics built for developers."
   }
 }
