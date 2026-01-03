@@ -22,12 +22,23 @@ jobs:
           # Fetch latest release/tag for each SDK
           get_version() {
             local repo=$1
-            # Try releases first, fall back to tags
-            version=$(gh api repos/Mostly-Good-Metrics/$repo/releases/latest --jq '.tag_name' 2>/dev/null || \
-                      gh api repos/Mostly-Good-Metrics/$repo/tags --jq '.[0].name' 2>/dev/null || \
-                      echo "")
-            # Strip 'v' prefix if present
-            echo "${version#v}"
+            local version=""
+
+            # Try releases first
+            version=$(gh api "repos/Mostly-Good-Metrics/$repo/releases/latest" --jq '.tag_name // empty' 2>/dev/null || true)
+
+            # Fall back to tags if no release
+            if [ -z "$version" ]; then
+              version=$(gh api "repos/Mostly-Good-Metrics/$repo/tags" --jq '.[0].name // empty' 2>/dev/null || true)
+            fi
+
+            # Validate it looks like a version (starts with v or digit)
+            if [[ "$version" =~ ^v?[0-9] ]]; then
+              # Strip 'v' prefix if present
+              echo "${version#v}"
+            else
+              echo ""
+            fi
           }
 
           SWIFT_VERSION=$(get_version "mostly-good-metrics-swift-sdk")
@@ -103,14 +114,24 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Update SDK versions
 
-          Swift: ${{ steps.versions.outputs.swift }}
-          Android: ${{ steps.versions.outputs.android }}
-          React Native: ${{ steps.versions.outputs.react_native }}
-          JavaScript: ${{ steps.versions.outputs.js }}
-          Flutter: ${{ steps.versions.outputs.flutter }}
-          Capacitor: ${{ steps.versions.outputs.capacitor }}
+          # Build commit message with only non-empty versions
+          MSG="Update SDK versions"
+          [ -n "${{ steps.versions.outputs.swift }}" ] && MSG="$MSG
+          Swift: ${{ steps.versions.outputs.swift }}"
+          [ -n "${{ steps.versions.outputs.android }}" ] && MSG="$MSG
+          Android: ${{ steps.versions.outputs.android }}"
+          [ -n "${{ steps.versions.outputs.react_native }}" ] && MSG="$MSG
+          React Native: ${{ steps.versions.outputs.react_native }}"
+          [ -n "${{ steps.versions.outputs.js }}" ] && MSG="$MSG
+          JavaScript: ${{ steps.versions.outputs.js }}"
+          [ -n "${{ steps.versions.outputs.flutter }}" ] && MSG="$MSG
+          Flutter: ${{ steps.versions.outputs.flutter }}"
+          [ -n "${{ steps.versions.outputs.capacitor }}" ] && MSG="$MSG
+          Capacitor: ${{ steps.versions.outputs.capacitor }}"
+          MSG="$MSG
 
           🤖 Automated by GitHub Actions"
+
+          git commit -m "$MSG"
           git push
