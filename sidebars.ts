@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         'guides/tracking-events',
         'guides/identifying-users',
         'guides/reserved-events',
+        'guides/using-a-proxy',
       ],
     },
     'api',
