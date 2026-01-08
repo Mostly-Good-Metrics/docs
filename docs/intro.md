@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
 
 ```swift
 // Package.swift
-.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.5.5")
+.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.6.0")
 ```
 
   </TabItem>
@@ -36,7 +36,7 @@ import TabItem from '@theme/TabItem';
 
 ```kotlin
 // build.gradle.kts
-implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.4")
+implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.5")
 ```
 
   </TabItem>
