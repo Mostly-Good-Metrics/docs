@@ -161,7 +161,7 @@ MostlyGoodMetrics.configure('mgm_proj_your_api_key', {
 await MostlyGoodMetrics.configure(
     MGMConfiguration(
         apiKey: 'mgm_proj_your_api_key',
-        baseURL: 'https://analytics.yourdomain.com',
+        baseUrl: 'https://analytics.yourdomain.com',
     ),
 );
 ```
