@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
 
 ```swift
 // Package.swift
-.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.6.0")
+.package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.6.1")
 ```
 
   </TabItem>
