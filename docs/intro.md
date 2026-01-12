@@ -36,7 +36,7 @@ import TabItem from '@theme/TabItem';
 
 ```kotlin
 // build.gradle.kts
-implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.5")
+implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.2.6")
 ```
 
   </TabItem>
@@ -59,7 +59,7 @@ npm install @mostly-good-metrics/javascript
 ```yaml
 # pubspec.yaml
 dependencies:
-  mostly_good_metrics_flutter: ^0.2.5
+  mostly_good_metrics_flutter: ^0.2.6
 ```
 
   </TabItem>
