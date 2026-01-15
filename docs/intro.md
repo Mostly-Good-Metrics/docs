@@ -59,7 +59,7 @@ npm install @mostly-good-metrics/javascript
 ```yaml
 # pubspec.yaml
 dependencies:
-  mostly_good_metrics_flutter: ^0.2.6
+  mostly_good_metrics_flutter: ^0.1.1
 ```
 
   </TabItem>
