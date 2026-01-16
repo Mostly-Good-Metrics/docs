@@ -26,6 +26,11 @@ const sidebars: SidebarsConfig = {
         'guides/using-a-proxy',
       ],
     },
+    {
+      type: 'category',
+      label: 'Integrations',
+      items: ['integrations/revenuecat'],
+    },
     'api',
   ],
 };
