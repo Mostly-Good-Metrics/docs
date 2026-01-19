@@ -2,7 +2,7 @@
   "swift": "0.6.1",
   "android": "0.2.6",
   "reactNative": "0.3.6",
-  "javascript": "0.6.1",
+  "javascript": "0.7.0",
   "flutter": "0.2.6",
   "capacitor": "0.2.0"
 }
