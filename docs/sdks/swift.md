@@ -6,6 +6,21 @@ sidebar_position: 1
 
 A lightweight Swift SDK for iOS, macOS, tvOS, watchOS, and visionOS.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration Options](#configuration-options)
+- [Automatic Behavior](#automatic-behavior)
+- [Automatic Events](#automatic-events)
+- [Automatic Context](#automatic-context)
+- [Event Naming](#event-naming)
+- [Properties](#properties)
+- [Manual Flush](#manual-flush)
+- [Debug Logging](#debug-logging)
+- [Thread Safety](#thread-safety)
+
 ## Requirements
 
 - iOS 14.0+ / macOS 11.0+ / tvOS 14.0+ / watchOS 7.0+
@@ -27,17 +42,49 @@ Or in Xcode: **File > Add Package Dependencies** and enter the repository URL.
 
 ## Quick Start
 
-### Initialize
+### 1. Initialize the SDK
 
-Initialize once at app launch (e.g., in `AppDelegate` or `@main` App struct):
+Initialize once at app launch. Choose the approach that matches your app's architecture:
+
+#### SwiftUI
 
 ```swift
+import SwiftUI
 import MostlyGoodMetrics
 
-MostlyGoodMetrics.configure(apiKey: "mgm_proj_your_api_key")
+@main
+struct MyApp: App {
+    init() {
+        MostlyGoodMetrics.configure(apiKey: "mgm_proj_your_api_key")
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
 ```
 
-### Track Events
+#### UIKit
+
+```swift
+import UIKit
+import MostlyGoodMetrics
+
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        MostlyGoodMetrics.configure(apiKey: "mgm_proj_your_api_key")
+        return true
+    }
+}
+```
+
+### 2. Track Events
 
 ```swift
 // Simple event
@@ -51,7 +98,7 @@ MostlyGoodMetrics.track("purchase_completed", properties: [
 ])
 ```
 
-### Identify Users
+### 3. Identify Users
 
 ```swift
 // Set user identity
@@ -60,6 +107,8 @@ MostlyGoodMetrics.identify(userId: "user_123")
 // Reset identity (e.g., on logout)
 MostlyGoodMetrics.shared?.resetIdentity()
 ```
+
+That's it! Events are automatically batched and sent.
 
 ## Configuration Options
 
@@ -91,6 +140,20 @@ MostlyGoodMetrics.configure(with: config)
 | `enableDebugLogging` | `false` | Enable console output |
 | `trackAppLifecycleEvents` | `true` | Auto-track lifecycle events |
 
+## Automatic Behavior
+
+The SDK automatically handles common tasks so you can focus on tracking what matters:
+
+- **Persists events** to disk, surviving app restarts
+- **Batches events** for efficient network usage
+- **Flushes on interval** (default: every 30 seconds)
+- **Flushes on background** when the app resigns active
+- **Retries on failure** for network errors (events are preserved)
+- **Compresses payloads** using gzip for requests > 1KB
+- **Handles rate limiting** by respecting `Retry-After` headers
+- **Persists user ID** across app launches
+- **Generates session IDs** per app launch
+
 ## Automatic Events
 
 When `trackAppLifecycleEvents` is enabled (default), the SDK automatically tracks:
@@ -102,12 +165,16 @@ When `trackAppLifecycleEvents` is enabled (default), the SDK automatically track
 | `$app_opened` | App became active (foreground) | - |
 | `$app_backgrounded` | App resigned active (background) | - |
 
-### macOS Behavior
+### macOS Lifecycle Event Behavior
 
-On macOS, window focus changes happen frequently. The SDK applies debouncing:
+On macOS, window focus changes happen frequently (Cmd-Tab, clicking other windows, etc.), which would generate excessive lifecycle events. To address this, the SDK applies debouncing on macOS:
 
-- `$app_backgrounded`: Not tracked on macOS
-- `$app_opened`: Only tracked if the app was inactive for at least 5 seconds
+- **`$app_backgrounded`**: Not tracked on macOS (focus changes are too frequent)
+- **`$app_opened`**: Only tracked if the app was inactive for **at least 5 seconds**
+
+This ensures you get meaningful "app opened" events when users return to your app after a meaningful absence, without noise from quick window switches.
+
+> **Note:** Events are still flushed on every focus change regardless of debouncing, ensuring data is reliably sent to the server.
 
 ## Automatic Context
 
@@ -118,10 +185,32 @@ Every event automatically includes:
 | `platform` | `"ios"` | Platform (ios, macos, tvos, watchos, visionos) |
 | `os_version` | `"17.1"` | Operating system version |
 | `app_version` | `"1.0.0 (42)"` | App version with build number |
+| `environment` | `"production"` | Environment from configuration |
 | `session_id` | `"uuid..."` | Unique session ID (per app launch) |
 | `user_id` | `"user_123"` | User ID (if set via `identify()`) |
 | `$device_type` | `"phone"` | Device type (phone, tablet, desktop, tv, watch, vision) |
 | `$device_model` | `"iPhone15,2"` | Device model identifier |
+
+> **Note:** The `$` prefix indicates reserved system events and properties. Avoid using `$` prefix for your own custom events.
+
+## Event Naming
+
+Event names must:
+- Start with a letter (or `$` for system events)
+- Contain only alphanumeric characters, underscores, and spaces
+- Be 255 characters or less
+
+```swift
+// Valid
+MostlyGoodMetrics.track("button_clicked")
+MostlyGoodMetrics.track("PurchaseCompleted")
+MostlyGoodMetrics.track("step_1_completed")
+MostlyGoodMetrics.track("User Signed Up")
+
+// Invalid (will be ignored)
+MostlyGoodMetrics.track("123_event")      // starts with number
+MostlyGoodMetrics.track("event-name")     // contains hyphen
+```
 
 ## Properties
 
@@ -147,6 +236,8 @@ MostlyGoodMetrics.track("checkout", properties: [
 
 ## Manual Flush
 
+Events are automatically flushed periodically and when the app backgrounds. You can also trigger a manual flush:
+
 ```swift
 MostlyGoodMetrics.shared?.flush { result in
     switch result {
@@ -158,17 +249,25 @@ MostlyGoodMetrics.shared?.flush { result in
 }
 ```
 
-## Automatic Behavior
+## Debug Logging
 
-The SDK automatically:
+Enable debug logging to see SDK activity:
 
-- Persists events to disk, surviving app restarts
-- Batches events for efficient network usage
-- Flushes every 30 seconds (configurable)
-- Flushes when the app backgrounds
-- Retries on network failure
-- Compresses payloads using gzip for requests > 1KB
-- Handles rate limiting by respecting `Retry-After` headers
+```swift
+let config = MGMConfiguration(
+    apiKey: "mgm_proj_your_api_key",
+    enableDebugLogging: true
+)
+MostlyGoodMetrics.configure(with: config)
+```
+
+Output example:
+```
+[MostlyGoodMetrics] Initialized with 3 cached events
+[MostlyGoodMetrics] Tracked event: button_clicked
+[MostlyGoodMetrics] Flushing 4 events
+[MostlyGoodMetrics] Successfully flushed 4 events
+```
 
 ## Thread Safety
 
