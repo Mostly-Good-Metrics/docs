@@ -16,6 +16,54 @@ Authorization: Bearer mgm_proj_your_api_key
 
 ## Endpoints
 
+### GET /api/events/types
+
+Get all event types with their counts. Useful for understanding which events are tracked most frequently and building dashboards.
+
+**Request:**
+
+```bash
+curl -X GET "https://ingest.mostlygoodmetrics.com/api/events/types" \
+  -H "Authorization: Bearer mgm_proj_your_api_key"
+```
+
+**Response:**
+
+```json
+{
+  "event_types": [
+    { "name": "button_clicked", "count": 12504 },
+    { "name": "page_viewed", "count": 84321 },
+    { "name": "purchase_completed", "count": 1893 },
+    { "name": "$app_opened", "count": 45123 }
+  ]
+}
+```
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `start_date` | string | No | ISO 8601 date to filter from (inclusive) |
+| `end_date` | string | No | ISO 8601 date to filter to (inclusive) |
+
+**Example with date range:**
+
+```bash
+curl -X GET "https://ingest.mostlygoodmetrics.com/api/events/types?start_date=2024-01-01&end_date=2024-01-31" \
+  -H "Authorization: Bearer mgm_proj_your_api_key"
+```
+
+**Response Schema:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event_types` | array | List of event type objects |
+| `event_types[].name` | string | Event name |
+| `event_types[].count` | number | Total count of this event type |
+
+---
+
 ### POST /api/events
 
 Send one or more events.
