@@ -18,7 +18,7 @@ User → analytics.yourdomain.com → MGM ✅
 
 ## Quick Deploy
 
-The [MGM Proxy](https://github.com/Mostly-Good-Metrics/mgm-proxy) is a tiny reverse proxy (~5MB, ~10MB RAM, <1ms latency) that forwards requests to MGM.
+The [MGM Proxy](https://github.com/Mostly-Good-Metrics/mgm-proxy) is a tiny reverse proxy (~5MB, ~10MB RAM, under 1ms latency) that forwards requests to MGM.
 
 Deploy to your preferred platform:
 

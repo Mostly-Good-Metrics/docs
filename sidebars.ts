@@ -5,8 +5,31 @@ const sidebars: SidebarsConfig = {
     'intro',
     {
       type: 'category',
-      label: 'SDKs',
+      label: 'Quickstart',
       collapsed: false,
+      items: [
+        'quickstart/javascript',
+        'quickstart/swift',
+        'quickstart/android',
+        'quickstart/react-native',
+        'quickstart/flutter',
+        'quickstart/capacitor',
+      ],
+    },
+    'concepts',
+    {
+      type: 'category',
+      label: 'Features',
+      items: [
+        'features/insights',
+        'features/funnels',
+        'features/retention',
+        'features/experiments',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'SDKs',
       items: [
         'sdks/swift',
         'sdks/android',
@@ -31,7 +54,11 @@ const sidebars: SidebarsConfig = {
       label: 'Integrations',
       items: ['integrations/revenuecat'],
     },
-    'api',
+    {
+      type: 'category',
+      label: 'HTTP API',
+      items: ['api/index', 'api/events', 'api/experiments'],
+    },
   ],
 };
 

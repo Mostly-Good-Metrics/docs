@@ -87,12 +87,14 @@ const config: Config = {
             {label: 'React Native', to: '/sdks/react-native'},
             {label: 'JavaScript', to: '/sdks/javascript'},
             {label: 'Flutter', to: '/sdks/flutter'},
+            {label: 'Capacitor', to: '/sdks/capacitor'},
           ],
         },
         {
           title: 'Resources',
           items: [
             {label: 'Getting Started', to: '/'},
+            {label: 'Core Concepts', to: '/concepts'},
             {label: 'API Reference', to: '/api'},
           ],
         },
