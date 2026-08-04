@@ -13,6 +13,7 @@ The SDKs are wrappers around a small HTTP API. If you're on a platform without a
 |----------|---------|
 | [`POST /v1/events`](/api/events) | Send events |
 | [`GET /v1/experiments`](/api/experiments) | Fetch experiment variant assignments |
+| [`GET /v1/experiments/configs`](/api/experiments#get-v1experimentsconfigs) | Fetch experiment configs for local (on-device) enrollment |
 
 ## Authentication
 

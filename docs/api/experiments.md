@@ -5,7 +5,7 @@ title: GET /v1/experiments
 
 # GET /v1/experiments
 
-Fetch experiment variant assignments for a user. The SDKs with experiment support ([JavaScript](/sdks/javascript), [Android](/sdks/android), [React Native](/sdks/react-native), [Flutter](/sdks/flutter)) call this for you — use it directly for server-side assignment or platforms without an SDK.
+Fetch experiment variant assignments for a user. All six SDKs ([Swift](/sdks/swift), [Android](/sdks/android), [React Native](/sdks/react-native), [JavaScript](/sdks/javascript), [Flutter](/sdks/flutter), [Capacitor](/sdks/capacitor)) call this for you — use it directly for server-side assignment or platforms without an SDK.
 
 ## Request
 
@@ -52,6 +52,33 @@ Assignments are sticky: the same ID always gets the same variant for a running e
 ```
 
 **Errors:** `401` `{"error": "Invalid or missing API key"}`.
+
+## GET /v1/experiments/configs
+
+Fetch the configurations of running experiments — ID, name, and variant list — with **no user parameters**. This powers [local experiment enrollment](/features/experiments#local-experiment-enrollment): SDKs in local mode fetch the configs and bucket the user on device, so no user identifier is ever sent to the server for assignment.
+
+```bash
+curl "https://ingest.mostlygoodmetrics.com/v1/experiments/configs" \
+  -H "Authorization: Bearer mgm_proj_your_api_key"
+```
+
+Authentication is the same project API key; the endpoint accepts no query parameters and ignores any sent.
+
+**Response** — `200 OK` with only running experiments:
+
+```json
+{
+  "experiments": [
+    {
+      "id": "7b1e8a90-4c2d-4f6a-9e3b-2a1d5c8f0e71",
+      "name": "button-color",
+      "variants": ["control", "treatment"]
+    }
+  ]
+}
+```
+
+`id` is the experiment's UUID — it is what on-device bucketing hashes. To replicate the SDKs' deterministic assignment: take the first 8 bytes of `SHA-256("<experiment_uuid>:<user_id>")` as a big-endian unsigned 64-bit integer and pick `variants[bucket % variants.length]`. Same errors as above (`401` for a bad key).
 
 ## Reporting exposure
 
