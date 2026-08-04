@@ -25,6 +25,7 @@ const sidebars: SidebarsConfig = {
         'features/funnels',
         'features/retention',
         'features/experiments',
+        'features/privacy',
       ],
     },
     {
@@ -49,10 +50,15 @@ const sidebars: SidebarsConfig = {
         'guides/using-a-proxy',
       ],
     },
+    'cli',
     {
       type: 'category',
       label: 'Integrations',
-      items: ['integrations/revenuecat'],
+      items: [
+        'integrations/revenuecat',
+        'integrations/claude-code-plugin',
+        'integrations/mcp-server',
+      ],
     },
     {
       type: 'category',

@@ -15,21 +15,26 @@ An experiment has:
 - **Goal event** — the event that counts as a conversion, e.g. `purchase_completed`
 - **Status** — created in the dashboard, then started and stopped explicitly
 
-Assignment happens on the server and is **sticky**: the same user always gets the same variant while the experiment runs. Users who were assigned while anonymous keep their variant after they log in — the SDK re-fetches assignments with both IDs and the server links them.
+Assignment happens on the server by default (see [local enrollment](#local-experiment-enrollment) for on-device bucketing) and is **sticky**: the same user always gets the same variant while the experiment runs. Users who were assigned while anonymous keep their variant after they log in — the SDK re-fetches assignments with both IDs and the server links them.
 
 ## How to instrument
 
 ### 1. Branch on the variant
 
-The JavaScript, Android, React Native, and Flutter SDKs fetch and cache assignments automatically:
+All six SDKs fetch and cache assignments automatically:
 
 ```typescript
-// JavaScript / React Native
+// JavaScript / React Native / Capacitor
 await MostlyGoodMetrics.ready(); // wait for assignments (default timeout 5s)
 const variant = MostlyGoodMetrics.getVariant('checkout-flow', 'control');
 if (variant === 'treatment') {
   // show the new checkout
 }
+```
+
+```swift
+// Swift
+let variant = MostlyGoodMetrics.getVariant("checkout-flow", fallback: "control")
 ```
 
 ```kotlin
@@ -43,8 +48,6 @@ final variant = MostlyGoodMetrics.getVariant('checkout-flow', fallback: 'control
 ```
 
 The second argument is the fallback returned when assignments haven't loaded yet (first launch, offline) — make it your control experience.
-
-The Swift and Capacitor SDKs don't have a `getVariant` API yet; you can call [`GET /v1/experiments`](/api/experiments) directly and track exposure yourself.
 
 ### 2. Exposure is tracked for you
 
@@ -64,6 +67,47 @@ MostlyGoodMetrics.track('purchase_completed', { total: 29.99 });
 - A **conversion** is a goal event fired at or after enrollment, joined on the canonical user ID.
 
 Because conversions join on user ID rather than requiring the experiment property on the goal event itself, server-side goal events — like purchases reported by the [RevenueCat integration](/integrations/revenuecat) — attribute correctly, as long as the user IDs match.
+
+## Local experiment enrollment
+
+By default (`experimentMode: 'server'`), the SDK asks the server which variant a user is assigned to. Set `experimentMode: 'local'` and the SDK instead fetches only the experiment *configurations* — ID, name, and variant list, via [`GET /v1/experiments/configs`](/api/experiments#get-v1experimentsconfigs) — and buckets the user **on device**:
+
+```typescript
+MostlyGoodMetrics.configure({
+  apiKey: 'mgm_proj_your_api_key',
+  experimentMode: 'local',
+});
+
+// Same API as server mode
+const variant = MostlyGoodMetrics.getVariant('checkout-flow', 'control');
+```
+
+Provide the configs inline via `localExperiments` and the SDK makes no experiments network request at all:
+
+```typescript
+MostlyGoodMetrics.configure({
+  apiKey: 'mgm_proj_your_api_key',
+  experimentMode: 'local',
+  localExperiments: [
+    {
+      id: '7b1e8a90-4c2d-4f6a-9e3b-2a1d5c8f0e71', // must match the server-side experiment ID
+      name: 'checkout-flow',
+      variants: ['control', 'treatment'],
+    },
+  ],
+});
+```
+
+All six SDKs support both modes with the same option names (Swift: `experimentMode: .local` with `MGMExperimentConfig`; Android: `MGMExperimentMode.LOCAL`; Flutter: `MGMExperimentMode.local`).
+
+How it works:
+
+- **Deterministic bucketing** — the bucket is the first 8 bytes of `SHA-256("<experiment_uuid>:<user_id>")` as a big-endian unsigned 64-bit integer, and the variant is `variants[bucket % variants.length]`. Every SDK and the server use the same algorithm, so the same ID gets the same variant everywhere.
+- **Sticky assignments** — the first `getVariant()` call persists the assignment (per experiment UUID) and reuses it from then on; `identify()` never re-buckets. A forget-me reset (`clearAnonymousId: true`) clears the persisted assignments so the rotated anonymous ID is bucketed fresh.
+- **Exposure works the same** — the first `getVariant()` hit tracks `$experiment_exposure`, deduplicated per user, experiment, and variant.
+- **Privacy benefit** — no user identifier is ever sent to the server for assignment: the configs endpoint takes no user parameters, and inline configs send nothing at all.
+
+**Cross-device caveat:** local bucketing hashes whatever ID the device currently uses and cannot resolve aliases. A user who is anonymous on one device and identified on another may receive different variants on each; server mode resolves identity aliases, local mode cannot. Use server mode when cross-device consistency matters.
 
 ## Good hygiene
 
