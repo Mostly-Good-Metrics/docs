@@ -21,7 +21,7 @@ Or add it to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mostly_good_metrics_flutter: ^0.5.0
+  mostly_good_metrics_flutter: ^0.5.1
 ```
 
 Requires Flutter 3.10+ and Dart 3.0+.
