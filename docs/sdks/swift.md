@@ -12,6 +12,7 @@ A lightweight Swift SDK for iOS, macOS, tvOS, watchOS, and visionOS.
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration Options](#configuration-options)
+- [Migrating an Existing App](#migrating-an-existing-app)
 - [Automatic Behavior](#automatic-behavior)
 - [Automatic Events](#automatic-events)
 - [Automatic Context](#automatic-context)
@@ -140,8 +141,27 @@ MostlyGoodMetrics.configure(with: config)
 | `maxStoredEvents` | `10000` | Max cached events |
 | `enableDebugLogging` | `false` | Enable console output |
 | `trackAppLifecycleEvents` | `true` | Auto-track lifecycle events |
+| `existingInstallation` | `false` | Establish lifecycle state without a migration-time `$app_installed` |
+| `contextProvider` | `nil` | Dynamic properties evaluated for each captured event |
 | `optedOutByDefault` | `false` | Start opted out until `optIn()` is called ([Privacy](#privacy)) |
 | `collectDeviceProperties` | `true` | Collect device model/type, manufacturer, locale, timezone |
+
+## Migrating an Existing App
+
+For an app that was already released before MGM was added, set
+`existingInstallation: true` on the migration release:
+
+```swift
+let config = MGMConfiguration(
+    apiKey: "mgm_proj_your_api_key",
+    existingInstallation: true
+)
+MostlyGoodMetrics.configure(with: config)
+```
+
+On MGM's first launch, this establishes the current version as the lifecycle
+baseline without emitting `$app_installed`. Later version changes still emit
+`$app_updated`. Remove the option after the migration release has reached users.
 
 ## Automatic Behavior
 
@@ -236,6 +256,23 @@ MostlyGoodMetrics.track("checkout", properties: [
 - String values: truncated to 1000 characters
 - Nesting depth: max 3 levels
 - Total properties size: max 10KB
+
+### Dynamic global properties
+
+Use `contextProvider` for values that change during a session. It is evaluated
+for every event and is not persisted:
+
+```swift
+let config = MGMConfiguration(
+    apiKey: "mgm_proj_your_api_key",
+    contextProvider: { ["organization_id": currentOrganization.id] }
+)
+```
+
+Collision precedence is: persisted super properties < dynamic context < event
+properties < MGM system properties. `$`-prefixed keys are reserved for MGM. In
+DEBUG builds, MGM prints a validation warning for invalid event names and custom
+property keys using that prefix.
 
 ## Manual Flush
 
