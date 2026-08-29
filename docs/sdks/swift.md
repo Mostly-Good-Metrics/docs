@@ -148,20 +148,23 @@ MostlyGoodMetrics.configure(with: config)
 
 ## Migrating an Existing App
 
-For an app that was already released before MGM was added, set
-`existingInstallation: true` on the migration release:
+For an app that was already released before MGM was added, derive
+`existingInstallation` from the previous provider's persisted installation
+marker. This prevents existing users from being counted as fresh installs
+without suppressing genuine new installations:
 
 ```swift
 let config = MGMConfiguration(
     apiKey: "mgm_proj_your_api_key",
-    existingInstallation: true
+    existingInstallation: legacyAnalytics.hasInstallationMarker()
 )
 MostlyGoodMetrics.configure(with: config)
 ```
 
 On MGM's first launch, this establishes the current version as the lifecycle
 baseline without emitting `$app_installed`. Later version changes still emit
-`$app_updated`. Remove the option after the migration release has reached users.
+`$app_updated`. Do not set `existingInstallation: true` for every user: retire
+the legacy marker only after the migration window has passed.
 
 ## Automatic Behavior
 
