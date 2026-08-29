@@ -107,6 +107,8 @@ MostlyGoodMetrics.configure({
 | `flushInterval` | `30` | Auto-flush interval in seconds |
 | `enableDebugLogging` | `false` | Enable console output |
 | `trackAppLifecycleEvents` | `false` | Auto-track lifecycle events |
+| `existingInstallation` | `false` | Baseline lifecycle state on a provider migration without emitting `$app_installed` |
+| `contextProvider` | - | Dynamic properties evaluated for every event; precedence is super properties, context, event properties, then MGM system properties |
 | `cookieDomain` | - | Cookie domain for cross-subdomain tracking |
 | `disableCookies` | `false` | Disable cookies, use only localStorage |
 | `persistence` | `'localStorage+cookie'` | Where state persists: `'localStorage+cookie'`, `'localStorage'`, or `'memory'` |
@@ -124,6 +126,24 @@ When `trackAppLifecycleEvents` is enabled:
 | `$app_updated` | Version change detected | `$version`, `$previous_version` |
 | `$app_opened` | Page load / tab visible | - |
 | `$app_backgrounded` | Tab hidden / page unload | - |
+
+## Migration and dynamic context
+
+For an existing site moving from another provider, derive `existingInstallation`
+from that provider's persisted install marker. Do **not** set it to `true` for
+all users: that would suppress genuine new installs.
+
+```typescript
+MostlyGoodMetrics.configure({
+  apiKey: 'mgm_proj_your_api_key',
+  existingInstallation: legacyAnalytics.hasInstallationMarker(),
+  contextProvider: () => ({ active_workspace_id: currentWorkspaceId() }),
+});
+```
+
+`contextProvider` runs for every event. Its values override super properties;
+explicit event properties and MGM system properties take precedence. With
+`enableDebugLogging`, MGM warns when custom properties use reserved `$` keys.
 
 ## Privacy
 
