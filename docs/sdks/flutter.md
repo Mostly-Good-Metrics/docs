@@ -28,7 +28,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mostly_good_metrics_flutter: ^0.5.1
+  mostly_good_metrics_flutter: ^0.6.0
 ```
 
 Then run:
