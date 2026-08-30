@@ -56,6 +56,7 @@ const sidebars: SidebarsConfig = {
       label: 'Integrations',
       items: [
         'integrations/revenuecat',
+        'integrations/agent-skills',
         'integrations/claude-code-plugin',
         'integrations/mcp-server',
       ],
