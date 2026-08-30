@@ -89,6 +89,8 @@ MostlyGoodMetrics.configure('mgm_proj_your_api_key', {
 | `maxStoredEvents` | `10000` | Max cached events |
 | `enableDebugLogging` | `false` | Enable console output |
 | `trackAppLifecycleEvents` | `true` | Auto-track lifecycle events |
+| `existingInstallation` | `false` | Baseline lifecycle state on a provider migration without emitting `$app_installed` |
+| `contextProvider` | - | Dynamic properties evaluated for every event |
 | `optedOutByDefault` | `false` | Start opted out until `optIn()` is called ([Privacy](#privacy)) |
 | `collectDeviceProperties` | `true` | Collect device properties |
 
@@ -100,6 +102,23 @@ MostlyGoodMetrics.configure('mgm_proj_your_api_key', {
 | `$app_updated` | First launch after version change | `$version`, `$previous_version` |
 | `$app_opened` | App became active (foreground) | - |
 | `$app_backgrounded` | App resigned active (background) | - |
+
+## Migration and dynamic context
+
+For an existing app moving from another provider, derive `existingInstallation`
+from that provider's persisted installation marker. Do **not** set it to `true`
+for every user, which would suppress genuine new installs.
+
+```typescript
+MostlyGoodMetrics.configure('mgm_proj_your_api_key', {
+  existingInstallation: legacyAnalytics.hasInstallationMarker(),
+  contextProvider: () => ({ active_workspace_id: currentWorkspaceId() }),
+});
+```
+
+Dynamic context overrides super properties; explicit event properties and MGM
+system properties take precedence. With `enableDebugLogging`, MGM warns when
+custom properties use reserved `$` keys.
 
 ## Privacy
 

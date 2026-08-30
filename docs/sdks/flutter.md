@@ -111,6 +111,8 @@ await MostlyGoodMetrics.configure(
 | `maxStoredEvents` | `10000` | Max cached events |
 | `enableDebugLogging` | `false` | Enable debug output |
 | `trackAppLifecycleEvents` | `true` | Auto-track lifecycle events |
+| `existingInstallation` | `false` | Baseline lifecycle state on a provider migration without emitting `$app_installed` |
+| `contextProvider` | - | Dynamic properties evaluated for every event |
 | `optedOutByDefault` | `false` | Start opted out until `optIn()` is called ([Privacy](#privacy)) |
 | `collectDeviceProperties` | `true` | Collect device manufacturer, locale, timezone |
 
@@ -123,6 +125,24 @@ await MostlyGoodMetrics.configure(
 | `$app_opened` | App started | - |
 | `$app_foregrounded` | App became active | - |
 | `$app_backgrounded` | App went to background | - |
+
+## Migration and dynamic context
+
+For an existing app moving from another provider, derive `existingInstallation`
+from that provider's persisted installation marker. Do **not** set it to `true`
+for every user, which would suppress genuine new installs.
+
+```dart
+await MostlyGoodMetrics.configure(MGMConfiguration(
+  apiKey: 'mgm_proj_your_api_key',
+  existingInstallation: legacyAnalytics.hasInstallationMarker,
+  contextProvider: () => {'active_workspace_id': currentWorkspaceId()},
+));
+```
+
+Dynamic context overrides super properties; explicit event properties and MGM
+system properties take precedence. DEBUG builds report invalid event names and
+reserved custom `$` property keys.
 
 ## Session Management
 

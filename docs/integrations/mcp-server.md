@@ -16,13 +16,21 @@ MGM ships an MCP (Model Context Protocol) server so AI assistants can query your
 
 Authentication is browser-based OAuth: the first time your client calls an MGM tool, you're sent to sign in to Mostly Good Metrics and approve access. No API keys to copy around.
 
+## Troubleshooting
+
+### I added MGM, but its tools are not visible
+
+Most MCP clients discover tools when an agent or task starts. After adding MGM as
+a new server, start a fresh agent/task (or restart your MCP client) and try again.
+Completing OAuth alone does not always refresh a running agent's tool list.
+
 ## Tools
 
 | Area | Tools |
 |------|-------|
 | Account & projects | `whoami`, `list_projects`, `create_project`, `create_api_key` |
 | Dashboard | `get_dashboard`, `get_filters`, `list_widgets`, `add_widget`, `remove_widget`, `reset_widgets` |
-| Events | `list_events`, `list_event_types` |
+| Events | `list_events`, `list_event_types`, `define_event` |
 | Funnels | `list_funnels`, `get_funnel`, `create_funnel`, `update_funnel`, `delete_funnel`, `execute_funnel` |
 | Retention | `list_retentions`, `get_retention`, `create_retention`, `update_retention`, `delete_retention`, `execute_retention` |
 | Queries | `list_queries`, `get_query`, `create_query`, `update_query`, `delete_query`, `execute_query` |

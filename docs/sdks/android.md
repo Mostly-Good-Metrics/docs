@@ -96,6 +96,8 @@ MostlyGoodMetrics.configure(this, config)
 | `maxStoredEvents` | `10000` | Max cached events |
 | `enableDebugLogging` | `false` | Enable logcat output |
 | `trackAppLifecycleEvents` | `true` | Auto-track lifecycle events |
+| `existingInstallation` | `false` | Baseline lifecycle state on a provider migration without emitting `$app_installed` |
+| `contextProvider` | `null` | Dynamic properties evaluated for every event |
 | `optedOutByDefault` | `false` | Start opted out until `optIn()` is called ([Privacy](#privacy)) |
 | `collectDeviceProperties` | `true` | Collect device model/type, manufacturer, locale, timezone |
 
@@ -107,6 +109,23 @@ MostlyGoodMetrics.configure(this, config)
 | `$app_updated` | First launch after version change | `$version`, `$previous_version` |
 | `$app_opened` | App became active (foreground) | - |
 | `$app_backgrounded` | App resigned active (background) | - |
+
+## Migration and dynamic context
+
+For an existing app moving from another provider, derive `existingInstallation`
+from that provider's persisted installation marker. Do **not** enable it for
+every user in a migration release, which would suppress genuine new installs.
+
+```kotlin
+val config = MGMConfiguration.Builder("mgm_proj_your_api_key")
+    .existingInstallation(legacyInstallMarkerExists())
+    .contextProvider { mapOf("active_workspace_id" to currentWorkspaceId()) }
+    .build()
+```
+
+Dynamic context overrides super properties; explicit event properties and MGM
+system properties take precedence. DEBUG builds report invalid event names and
+reserved custom `$` property keys.
 
 ## Automatic Context
 
