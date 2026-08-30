@@ -59,3 +59,4 @@ Once events are flowing, the dashboard fills in on its own — event counts, act
 - [SDK references](/sdks/swift) — every option, for every platform
 - [HTTP API](/api) — the wire format underneath it all
 - [Using a Proxy](/guides/using-a-proxy) — get past ad blockers with a first-party domain
+- [Agent skills](/integrations/agent-skills) — make MGM workflows discoverable in Codex, Claude Code, and compatible agents

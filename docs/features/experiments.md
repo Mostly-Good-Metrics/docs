@@ -13,6 +13,8 @@ An experiment has:
 - **Name** — e.g. `checkout-flow` (stick to ASCII names)
 - **Variants** — e.g. `control` and `treatment` (default: `a` and `b`)
 - **Goal event** — the event that counts as a conversion, e.g. `purchase_completed`
+- **Participant maturity** — optionally wait until each participant has had a
+  fixed number of days before including them in results
 - **Status** — created in the dashboard, then started and stopped explicitly
 
 Assignment happens on the server by default (see [local enrollment](#local-experiment-enrollment) for on-device bucketing) and is **sticky**: the same user always gets the same variant while the experiment runs. Users who were assigned while anonymous keep their variant after they log in — the SDK re-fetches assignments with both IDs and the server links them.
@@ -65,6 +67,18 @@ MostlyGoodMetrics.track('purchase_completed', { total: 29.99 });
 
 - A user is **enrolled** in a variant from their first exposure event (or first event carrying the `$experiment_*` property) during the run.
 - A **conversion** is a goal event fired at or after enrollment, joined on the canonical user ID.
+
+### Participant maturity
+
+When participant maturity is set to 14 days, someone is excluded from the
+result denominator until 14 full days after enrollment. Once they are mature,
+all of their conversions after enrollment count—including a conversion on day
+15 or later. The threshold is not a conversion deadline.
+
+The API and MCP currently expose this stored setting as
+`conversion_window_days` for compatibility. Treat it as participant maturity,
+despite the legacy field name. A temporary result-query override changes only
+that execution; it does not prove or modify the saved experiment setting.
 
 Because conversions join on user ID rather than requiring the experiment property on the goal event itself, server-side goal events — like purchases reported by the [RevenueCat integration](/integrations/revenuecat) — attribute correctly, as long as the user IDs match.
 
