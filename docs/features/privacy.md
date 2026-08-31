@@ -46,32 +46,19 @@ Pair this with the SDK-side "forget me" reset so the device stops sending linkab
 
 ## Data retention
 
-Events are retained according to your organization's plan. MGM then adds a
-30-day safety grace period before daily cleanup can permanently delete raw
-events:
+MGM does not currently run automatic raw-data deletion. Permanent lifecycle
+deletion is not scheduled for free or paid organizations.
 
-| Plan | Plan retention | Earliest physical deletion |
-|------|----------------|----------------------------|
-| Free | 30 days | After 60 days |
-| Starter | 90 days | After 120 days |
-| Pro | 365 days | After 395 days |
-| Enterprise | Unlimited | Never scheduled |
+PostgreSQL holds the recovery copy of accepted events and user profiles.
+ClickHouse holds event-level analytics without an automatic TTL, and historical
+daily aggregates preserve long-term event totals. Organization owners and
+admins can open **Organization Settings → Data storage** to review this policy.
 
-We send a mandatory email and in-app warning before a project's raw data first
-reaches its physical-deletion window. Cleanup remains blocked until successful
-delivery is durably recorded and seven full days have elapsed. A shorter plan,
-an expired pause, or another policy change cannot bypass that warning gate.
-
-Organization owners and admins can open
-**Organization Settings → Data retention** to review every project's exact
-window and request one request-anchored 30-day deletion pause when they need
-time to export data or upgrade. The pause does not silently shorten an emailed
-deadline; MGM warns again near resumption and still enforces the seven-day
-gate. Support can also pause retention during an active data investigation.
-
-Retention ages events from when MGM ingested them, not solely from the client
-event timestamp. This means delayed or backdated events still receive the full
-plan window and grace period.
+This lifecycle policy does not prevent intentional deletion. Per-user privacy
+erasure, project deletion, and account deletion continue to remove the data in
+their documented scope. If MGM introduces an automatic cleanup policy later,
+we will announce it before enabling it and document its warning and safety
+controls here.
 
 ## Environment tagging
 
