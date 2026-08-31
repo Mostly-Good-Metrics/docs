@@ -46,14 +46,27 @@ Pair this with the SDK-side "forget me" reset so the device stops sending linkab
 
 ## Data retention
 
-Events are retained according to your organization's plan and deleted by daily cleanup jobs after the window:
+Events are retained according to your organization's plan. MGM then adds a
+30-day safety grace period before daily cleanup can permanently delete raw
+events:
 
-| Plan | Retention |
-|------|-----------|
-| Free | 30 days |
-| Starter | 90 days |
-| Pro | 365 days |
-| Enterprise | Unlimited |
+| Plan | Plan retention | Earliest physical deletion |
+|------|----------------|----------------------------|
+| Free | 30 days | After 60 days |
+| Starter | 90 days | After 120 days |
+| Pro | 365 days | After 395 days |
+| Enterprise | Unlimited | Never scheduled |
+
+We email organization members before a project's raw data first reaches its
+physical-deletion window. Organization owners and admins can open
+**Organization Settings → Data retention** to review every project's exact
+window and request one additional 30-day extension when they need time to
+export data or upgrade. Support can also pause retention during an active data
+investigation.
+
+Retention ages events from when MGM ingested them, not solely from the client
+event timestamp. This means delayed or backdated events still receive the full
+plan window and grace period.
 
 ## Environment tagging
 
