@@ -28,7 +28,7 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 
 | Area | Tools |
 |------|-------|
-| Account & projects | `whoami`, `list_projects`, `create_project`, `create_api_key` |
+| Account & projects | `whoami`, `list_projects`, `create_project`, `list_api_keys`, `create_api_key`, `revoke_api_key` |
 | Dashboard | `get_dashboard`, `get_filters`, `list_widgets`, `add_widget`, `remove_widget`, `reset_widgets` |
 | Events | `list_events`, `list_event_types`, `define_event` |
 | Funnels | `list_funnels`, `get_funnel`, `create_funnel`, `update_funnel`, `delete_funnel`, `execute_funnel` |
@@ -36,4 +36,20 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 | Queries | `list_queries`, `get_query`, `create_query`, `update_query`, `delete_query`, `execute_query` |
 | Experiments | `list_experiments`, `get_experiment`, `create_experiment`, `update_experiment`, `delete_experiment`, `start_experiment`, `stop_experiment` |
 
-Ad-hoc analysis works without saving anything: `execute_funnel`, `execute_retention`, and `execute_query` all accept inline definitions, so an assistant can answer "where do users drop off between signup and purchase?" in one call.
+Ad-hoc analysis works without saving anything: `execute_funnel`,
+`execute_retention`, and `execute_query` all accept inline definitions,
+so an assistant can answer "where do users drop off between signup and
+purchase?" in one call.
+
+### API key safety
+
+MCP access continues to use OAuth. The project API keys managed by these tools
+are client-side ingestion credentials used by your SDKs and event API.
+
+`create_api_key` requires an explicit safety mode. Pass one or more
+`allowed_identifiers` to restrict ingestion to specific Apple bundle IDs,
+Android package names/application IDs, or web domains (recommended), or set
+`unrestricted` to `true` when the key intentionally needs
+to accept every source. The full key is returned only when it is created;
+`list_api_keys` returns prefixes and restriction metadata without exposing raw
+keys. Use `revoke_api_key` with both the project and key IDs to disable a key.
