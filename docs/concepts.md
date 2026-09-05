@@ -62,7 +62,10 @@ Call `resetIdentity()` on logout so the next user on the device doesn't inherit 
 
 ## Sessions
 
-Each SDK generates a session ID per app launch (or page visit, on the web) and attaches it to every event as `session_id`. Sessions are handled entirely by the SDK — you never manage them yourself. They're used for within-session analysis, like session counts and durations in the user explorer.
+Each SDK generates a session ID per app launch. On the web, a session continues
+across reloads and client-side navigation and renews after 30 minutes of
+inactivity. Every event carries that `session_id`; you never manage it yourself.
+Sessions power visit counts, engagement, funnels, and the user explorer.
 
 ## Properties
 
