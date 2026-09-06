@@ -28,6 +28,12 @@ Analytics** inside your MGM project to see:
 - Top pages, sources, campaigns, countries, devices, and browsers
 - One-click segment filters across the entire overview
 
+Before the first page view arrives, the screen shows a clearly labeled preview
+and a copy-ready setup snippet. Web Analytics is shown in project navigation by
+default so the capability is discoverable. For app-only or backend-only
+projects, an owner or admin can hide it from **Project Settings** and restore it
+at any time from **Integrations**.
+
 ## How MGM defines the metrics
 
 | Metric | Definition |
