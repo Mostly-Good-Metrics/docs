@@ -26,6 +26,7 @@ Analytics** inside your MGM project to see:
 - Views per visit, bounce rate, and average engagement time
 - Hourly or daily traffic
 - Top pages, sources, campaigns, countries, devices, and browsers
+- A **Live now** view of recent visitors, active routes, and country-level locations
 - One-click segment filters across the entire overview
 
 Before the first page view arrives, the screen shows a clearly labeled preview
@@ -52,6 +53,29 @@ window.
 Average engagement intentionally excludes time spent in a background tab. If a
 project contains older SDK data without `$page_engagement`, MGM displays the
 metric as unavailable rather than presenting a misleading zero.
+
+## Live activity
+
+**Live now** shows visitors and sessions that sent a web event during the last
+five minutes. It refreshes automatically and highlights the routes being viewed
+alongside an aggregate country map. MGM does not generate synthetic heartbeat
+events for this view, so live activity never inflates pageviews, funnels, usage,
+or billing. Someone silently reading the same page for longer than five minutes
+may therefore disappear until they interact or navigate again.
+
+Location detail follows the project's existing geolocation privacy setting. The
+map is aggregate and country-level; it does not expose a person's precise
+location.
+
+## Dynamic routes
+
+Top pages groups obvious dynamic identifiers into readable route patterns. For
+example, visits to different organization URLs appear together as
+`/organizations/:organization_id`. Select the grouped route to see its exact
+underlying paths and filter the rest of the overview to that route.
+
+Older manually captured pageviews without a `pathname` appear as **Unclassified
+/ older pageviews** instead of being mixed into current routes.
 
 ## Website analytics plus product analytics
 
