@@ -26,7 +26,7 @@ Analytics** inside your MGM project to see:
 - Views per visit, bounce rate, and average engagement time
 - Hourly or daily traffic
 - Top pages, sources, campaigns, countries, devices, and browsers
-- A **Live now** view of recent visitors, active routes, and country-level locations
+- An **On your site now** view of recent visitors, active routes, and country-level locations
 - One-click segment filters across the entire overview
 
 Before the first page view arrives, the screen shows a clearly labeled preview
@@ -56,12 +56,19 @@ metric as unavailable rather than presenting a misleading zero.
 
 ## Live activity
 
-**Live now** shows visitors and sessions that sent a web event during the last
+**On your site now** shows visitors and sessions that sent a web event during the last
 five minutes. It refreshes automatically and highlights the routes being viewed
 alongside an aggregate country map. MGM does not generate synthetic heartbeat
 events for this view, so live activity never inflates pageviews, funnels, usage,
 or billing. Someone silently reading the same page for longer than five minutes
 may therefore disappear until they interact or navigate again.
+
+Add **On your site now** to a project dashboard when the live count is useful
+beside the project's other KPIs. It is optional rather than added automatically,
+and it refreshes independently of slower historical dashboard widgets. The MGM
+iOS app renders the same dashboard card and opens a native detail view for active
+routes and aggregate countries. This view is specifically website traffic; it
+does not imply that native app users are currently online.
 
 Location detail follows the project's existing geolocation privacy setting. The
 map is aggregate and country-level; it does not expose a person's precise
