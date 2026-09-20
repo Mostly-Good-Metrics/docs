@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Claude Code Plugin
 
-The official Mostly Good Metrics plugin for [Claude Code](https://claude.com/claude-code). It connects Claude to your MGM projects via [MCP](/integrations/mcp-server) and ships skills for analyzing metrics, building funnels, running weekly reviews, and instrumenting your app.
+The official Mostly Good Metrics plugin for [Claude Code](https://claude.com/claude-code). It connects Claude to your MGM projects via [MCP](/integrations/mcp-server) and ships eight skills for product analytics, instrumentation, dashboards, retention, and experiments.
 
 ## Install
 
@@ -33,5 +33,9 @@ The plugin connects the MGM MCP server (`https://app.mostlygoodmetrics.com/mcp`)
 - **instrument-my-app** — Claude uses this automatically when you want to add analytics to code.
   - "Add MGM tracking to my Flutter app."
   - "What events should I track for this signup flow?"
+- **build-dashboard** — create durable queries and widgets around decisions your team tracks.
+- **run-experiment** — plan, launch, monitor, and conclude an MGM experiment safely.
+- **retention-cohorts** — run and interpret cohort-retention analyses.
+- **audit-instrumentation** — validate event contracts and diagnose missing or misleading data.
 
 The instrument-my-app skill knows all six SDKs: [Swift](/sdks/swift), [Android](/sdks/android), [Flutter](/sdks/flutter), [JavaScript](/sdks/javascript), [React Native](/sdks/react-native), and [Capacitor](/sdks/capacitor).

@@ -8,17 +8,14 @@ The MostlyGoodMetrics CLI (`mgm`) manages projects, API keys, and dashboards, an
 
 ## Install
 
-The CLI is not yet published to npm — install it from source for now:
+Install the published package globally:
 
 ```bash
-git clone https://github.com/Mostly-Good-Metrics/cli
-cd cli
-npm install
-npm run build
-node bin/mgm.js --help
+npm install -g @mostly-good-metrics/cli
+mgm --help
 ```
 
-Requires Node.js 18 or newer. Once it's on npm, installation will be `npm install -g @mostly-good-metrics/cli`.
+Requires Node.js 18 or newer.
 
 ## Quickstart
 
@@ -46,10 +43,10 @@ Most project-scoped commands read the project from `.mgm.json` (created by `mgm 
 | `mgm projects list\|create\|show` | Manage projects |
 | `mgm keys list\|create\|revoke` | Manage project API keys |
 | `mgm dashboard` | Dashboard stats with filters (`--range`, `--platform`, ...) |
-| `mgm events list\|types\|send` | Inspect recent events, send test events |
-| `mgm funnels list\|create\|execute\|delete` | Saved and ad-hoc funnels |
-| `mgm retention list\|create\|execute\|delete` | Retention analyses |
-| `mgm queries list\|create\|execute\|delete` | Saved and ad-hoc queries |
+| `mgm events list\|types\|define\|send` | Inspect events, define event metadata, or send a test event |
+| `mgm funnels list\|show\|create\|update\|execute\|delete` | Saved and ad-hoc funnels |
+| `mgm retention list\|show\|create\|update\|execute\|delete` | Saved and ad-hoc retention analyses |
+| `mgm queries list\|show\|create\|update\|execute\|delete` | Saved and ad-hoc queries |
 | `mgm experiments ...` | Manage and start/stop experiments |
 | `mgm widgets list\|add\|remove\|reset` | Manage dashboard widgets |
 
@@ -59,11 +56,26 @@ Run `mgm <command> --help` for full options.
 
 ```bash
 # Ad-hoc funnel across three events
-mgm funnels execute --steps "app_open,add_to_cart,purchase" --range 30d
+mgm funnels execute --steps "app_open,add_to_cart,purchase" --window 1d --range 30d
 
 # Unique users by day, as JSON
-mgm queries execute --metric unique_users --group-by date --range 7d --json
+mgm queries execute --metric unique_users --group-by date \
+  --events "signup,purchase" --range 7d --json
+
+# Ad-hoc retention without creating a saved analysis
+mgm retention execute --cohort-event signup --retention-event app_open \
+  --grain week --days 1,7,14,30 --range 90d
+
+# Define event metadata without ingesting an analytics event
+mgm events define checkout_completed --description "A customer completed checkout"
+
+# Send a test event. The CLI verifies that MGM_API_KEY belongs to the selected project.
+MGM_API_KEY=mgm_proj_... mgm events send '{"name":"test_event"}' --project prj_123
 
 # Create an API key for CI
 mgm keys create "CI" --project prj_123
 ```
+
+Keep `MGM_API_KEY` in your shell or secret manager rather than passing it as a
+command argument. Test-event sending writes analytics data; `events define`
+only creates catalog metadata.
