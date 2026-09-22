@@ -37,6 +37,8 @@ Then run:
 flutter pub get
 ```
 
+For iOS privacy manifest coverage, use `shared_preferences` ^2.2.3, `path_provider` ^2.1.3, and `device_info_plus` ^11.1.1 or compatible newer versions. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the app-level manifest and label.
+
 ## Quick Start
 
 ### Initialize
