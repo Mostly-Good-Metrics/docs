@@ -296,6 +296,8 @@ MostlyGoodMetrics.shared?.flush { result in
 
 The SDK never reads the IDFA and never triggers an App Tracking Transparency prompt, and it collects no location, contacts, or other sensitive data. `identify()` is optional — without it, users are tracked under a random, app-scoped anonymous ID (`$anon_...`) that is not derived from the device.
 
+The next SDK release bundles an Apple privacy manifest; no extra MGM manifest setup is needed after upgrading. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the declarations and your app's privacy-label answers.
+
 ### Opt-out
 
 ```swift
