@@ -26,12 +26,16 @@ import { MostlyGoodMetrics } from '@mostly-good-metrics/javascript';
 
 MostlyGoodMetrics.configure({
   apiKey: 'mgm_proj_your_api_key',
+  trackPageViews: true, // Optional: unlock the Web Analytics overview
 });
 ```
 
 In Next.js and other SSR frameworks, run this only in the browser (`typeof window !== 'undefined'`). See the [JavaScript SDK reference](/sdks/javascript#framework-integration) for React, Next.js, and Vue setup patterns.
 
 ## 4. Track your first event
+
+With `trackPageViews: true`, MGM is already capturing website traffic. Add
+product events for the actions that matter to your business:
 
 ```typescript
 MostlyGoodMetrics.track('first_event', {
