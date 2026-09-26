@@ -30,13 +30,15 @@ A lightweight Swift SDK for iOS, macOS, tvOS, watchOS, and visionOS.
 
 ## Installation
 
+The Swift SDK is distributed through Swift Package Manager.
+
 ### Swift Package Manager
 
 Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.10.1")
+    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.11.0")
 ]
 ```
 
