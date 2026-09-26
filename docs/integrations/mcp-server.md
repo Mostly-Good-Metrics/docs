@@ -45,8 +45,8 @@ purchase?" in one call.
 
 Use `query_metrics` when an assistant needs several aggregate answers for the
 same project. It runs 1–10 independent queries with bounded server-side
-concurrency, so the client makes one MCP call instead of repeatedly calling
-`execute_query`.
+concurrency without tying up the shared MCP server, so the client makes one MCP
+call instead of repeatedly calling `execute_query`.
 
 ```json
 {
@@ -69,11 +69,12 @@ concurrency, so the client makes one MCP call instead of repeatedly calling
 ```
 
 Each result repeats the caller-defined `id` and has a `status`. Successful
-scalar comparisons include current and previous values, absolute change, and
-percentage change when the previous value is nonzero. An invalid analytics
-definition or unsupported metric returns an error for that item without
-discarding other results. Missing or duplicate IDs and violations of the 1–10
-query batch contract reject the whole call.
+scalar comparisons use equal-length completed periods ending before today, so
+a partial current day cannot look like a drop. They include current and previous
+values, absolute change, and percentage change when the previous value is
+nonzero. An invalid analytics definition or unsupported metric returns an error
+for that item without discarding other results. Missing or duplicate IDs and
+violations of the 1–10 query batch contract reject the whole call.
 
 The tool is read-only and aggregate-only: it supports `count_events`,
 `unique_users`, `unique_sessions`, and `dau`, but does not return raw user IDs.
@@ -81,8 +82,9 @@ MCP clients receive both a backwards-compatible JSON text result and MCP
 `structuredContent`; no MGM-specific client runtime or dashboard change is
 required.
 
-Custom date ranges are limited to 366 days to keep database work and MCP
-responses bounded.
+Every date range is limited to a 366-day scan to keep database work and MCP
+responses bounded. Seasonal month, quarter, and year-over-year ranges are not
+supported by `query_metrics`; use `execute_query` when that shape is needed.
 
 ### API key safety
 
