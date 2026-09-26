@@ -24,6 +24,8 @@ npm install @capacitor/core @capacitor/app @capacitor/device @capacitor/preferen
 npx cap sync
 ```
 
+On iOS, the core `Capacitor` pod has a privacy manifest from 5.7.3 onward. The `@capacitor/app`, `@capacitor/device`, and `@capacitor/preferences` plugins still need app-level declarations. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels), including the UserDefaults `CA92.1` entry for Preferences.
+
 ## Quick Start
 
 ### Initialize

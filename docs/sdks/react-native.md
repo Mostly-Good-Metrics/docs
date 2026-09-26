@@ -28,6 +28,8 @@ npm install @mostly-good-metrics/react-native @react-native-async-storage/async-
 cd ios && pod install
 ```
 
+For iOS privacy manifest coverage, use `@react-native-async-storage/async-storage` 1.23.1 or later. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the app-level manifest and label.
+
 ## Quick Start
 
 ### Initialize

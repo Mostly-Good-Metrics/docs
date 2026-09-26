@@ -26,6 +26,7 @@ import { MostlyGoodMetrics } from '@mostly-good-metrics/javascript';
 
 MostlyGoodMetrics.configure({
   apiKey: 'mgm_proj_your_api_key',
+  trackPageViews: true, // Enable the Web Analytics overview
 });
 ```
 
@@ -94,6 +95,7 @@ MostlyGoodMetrics.configure({
   maxStoredEvents: 10000,
   enableDebugLogging: process.env.NODE_ENV === 'development',
   trackAppLifecycleEvents: true,
+  trackPageViews: true,
 });
 ```
 
@@ -107,6 +109,8 @@ MostlyGoodMetrics.configure({
 | `flushInterval` | `30` | Auto-flush interval in seconds |
 | `enableDebugLogging` | `false` | Enable console output |
 | `trackAppLifecycleEvents` | `false` | Auto-track lifecycle events |
+| `trackPageViews` | `false` | Capture initial and SPA page views plus visible-page engagement |
+| `sessionTimeoutMinutes` | `30` | Start a new website visit after this many inactive minutes |
 | `existingInstallation` | `false` | Baseline lifecycle state on a provider migration without emitting `$app_installed` |
 | `contextProvider` | - | Dynamic properties evaluated for every event; precedence is super properties, context, event properties, then MGM system properties |
 | `cookieDomain` | - | Cookie domain for cross-subdomain tracking |
@@ -117,6 +121,19 @@ MostlyGoodMetrics.configure({
 | `collectDeviceProperties` | `true` | Collect device properties |
 
 ## Automatic Events
+
+### Website analytics
+
+Set `trackPageViews: true` to capture an initial `page_view`, History API and
+back/forward navigation, and `$page_engagement` when the current page becomes
+hidden. This powers the Web Analytics screen without replacing your product
+events.
+
+Page views include the URL, hostname, pathname, title, referrer/referring
+domain, and UTM campaign values. Browser sessions continue across reloads and
+navigation, then renew after 30 minutes of inactivity. The SDK also attaches
+browser, OS, device, screen, viewport, and user-agent context unless
+`collectDeviceProperties` is disabled.
 
 When `trackAppLifecycleEvents` is enabled:
 
@@ -147,7 +164,12 @@ explicit event properties and MGM system properties take precedence. With
 
 ## Privacy
 
-The SDK collects no advertising identifiers, no location, and nothing you don't explicitly pass to `track()` or `identify()`. `identify()` is optional — without it, users are tracked under a random, resettable anonymous ID (`$anon_...`).
+The SDK collects no advertising identifiers or precise client location.
+`identify()` is optional — without it, users are tracked under a random,
+resettable anonymous ID (`$anon_...`). Automatic browser/device context is
+documented above and can be disabled with `collectDeviceProperties: false`;
+page URL, title, referrer, and campaign values are collected only when
+`trackPageViews` is enabled.
 
 ### Opt-out
 

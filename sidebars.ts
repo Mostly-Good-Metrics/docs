@@ -21,6 +21,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Features',
       items: [
+        'features/web-analytics',
         'features/insights',
         'features/funnels',
         'features/retention',
