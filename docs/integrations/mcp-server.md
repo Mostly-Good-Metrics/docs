@@ -71,10 +71,13 @@ call instead of repeatedly calling `execute_query`.
 Each result repeats the caller-defined `id` and has a `status`. Successful
 scalar comparisons use equal-length completed periods ending before today, so
 a partial current day cannot look like a drop. They include current and previous
-values, absolute change, and percentage change when the previous value is
-nonzero. An invalid analytics definition or unsupported metric returns an error
-for that item without discarding other results. Missing or duplicate IDs and
-violations of the 1–10 query batch contract reject the whole call.
+values, absolute change, percentage change when the previous value is nonzero,
+and the actual current and previous start/end dates. Comparisons are limited to
+ungrouped scalar queries. For a grouped comparison, send two grouped queries
+with explicit custom date ranges and compare the returned groups. An invalid
+analytics definition or unsupported metric returns an error for that item
+without discarding other results. Missing or duplicate IDs and violations of
+the 1–10 query batch contract reject the whole call.
 
 The tool is read-only and aggregate-only: it supports `count_events`,
 `unique_users`, `unique_sessions`, and `dau`, but does not return raw user IDs.
@@ -82,9 +85,12 @@ MCP clients receive both a backwards-compatible JSON text result and MCP
 `structuredContent`; no MGM-specific client runtime or dashboard change is
 required.
 
-Every date range is limited to a 366-day scan to keep database work and MCP
-responses bounded. Seasonal month, quarter, and year-over-year ranges are not
-supported by `query_metrics`; use `execute_query` when that shape is needed.
+Each query leg is limited to a 366-day scan, and one `query_metrics` call is
+limited to 3,660 day-scans across all queries and comparison legs. This keeps
+database work and MCP responses bounded; an overloaded server can also reject
+a batch immediately with a retry-later error. Seasonal month, quarter, and
+year-over-year ranges are not supported by `query_metrics`; use `execute_query`
+when that shape is needed.
 
 ### API key safety
 
