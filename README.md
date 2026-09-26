@@ -1,6 +1,18 @@
-# Website
+# Mostly Good Metrics documentation
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+
+## Documentation ownership
+
+These are public, customer-facing docs. Backend architecture, Support MCP
+operations, and private runbooks belong in the backend repository; portable
+agent workflow instructions belong in `Mostly-Good-Metrics/skills`. Link to
+those sources when useful instead of copying private or implementation-only
+details here.
+
+When product semantics, SDK contracts, MCP tools, or installation steps change,
+update the matching public page in the same release. Start with `AGENTS.md` or
+`CLAUDE.md` when using a coding agent in this repository.
 
 ## Installation
 

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Claude Code Plugin
 
-The official Mostly Good Metrics plugin for [Claude Code](https://claude.com/claude-code). It connects Claude to your MGM projects via [MCP](/integrations/mcp-server) and ships skills for analyzing metrics, building funnels, running weekly reviews, and instrumenting your app.
+The official Mostly Good Metrics plugin for [Claude Code](https://claude.com/claude-code). It connects Claude to your MGM projects via [MCP](/integrations/mcp-server) and bundles the complete portable MGM skill set.
 
 ## Install
 
@@ -29,9 +29,18 @@ The plugin connects the MGM MCP server (`https://app.mostlygoodmetrics.com/mcp`)
 - **funnel-doctor** — Claude uses this automatically for conversion questions.
   - "Where do users drop off during onboarding?"
   - "Build a checkout funnel and tell me what to fix first."
-- **weekly-review** — run it yourself with `/mostly-good-metrics:weekly-review` for a compact week-over-week report: WAU, signups, top-event deltas, notable movers, and one suggested action.
+- **weekly-review** — produce a compact week-over-week report: WAU, signups, top-event deltas, notable movers, and one suggested action.
 - **instrument-my-app** — Claude uses this automatically when you want to add analytics to code.
   - "Add MGM tracking to my Flutter app."
   - "What events should I track for this signup flow?"
+- **audit-instrumentation** — verify event quality and diagnose missing or misleading data.
+- **build-dashboard** — build saved queries and useful dashboard widgets.
+- **retention-cohorts** — create and interpret mature retention cohorts.
+- **run-experiment** — plan, launch, monitor, and conclude experiments safely.
 
 The instrument-my-app skill knows all six SDKs: [Swift](/sdks/swift), [Android](/sdks/android), [Flutter](/sdks/flutter), [JavaScript](/sdks/javascript), [React Native](/sdks/react-native), and [Capacitor](/sdks/capacitor).
+
+The skill instructions are maintained in the
+[`Mostly-Good-Metrics/skills`](https://github.com/Mostly-Good-Metrics/skills)
+repository and work in Codex and other compatible agents too. See
+[Agent skills](/integrations/agent-skills) for cross-agent installation.

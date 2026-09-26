@@ -11,10 +11,15 @@ MGM ships an MCP (Model Context Protocol) server so AI assistants can query your
 ## Connect
 
 - **Claude Code** — install the [Claude Code plugin](/integrations/claude-code-plugin), which connects the server and adds MGM-specific skills.
+- **Codex** — add the URL as an HTTP MCP server, then install the shared [agent skills](/integrations/agent-skills).
 - **claude.ai** — add it as a custom connector with the URL above.
 - **Any MCP client** — the server supports streamable HTTP with OAuth 2.0 (dynamic client registration included).
 
 Authentication is browser-based OAuth: the first time your client calls an MGM tool, you're sent to sign in to Mostly Good Metrics and approve access. No API keys to copy around.
+
+MCP tools provide access to MGM; [portable agent skills](/integrations/agent-skills)
+teach Codex, Claude Code, and compatible agents how to combine those tools into
+reliable workflows. Install both when you want automatic workflow discovery.
 
 ## Troubleshooting
 
