@@ -6,7 +6,7 @@ sidebar_position: 3
 
 MGM ships an MCP (Model Context Protocol) server so AI assistants can query your analytics directly.
 
-**URL:** `https://app.mostlygoodmetrics.com/mcp` (streamable HTTP)
+**URL:** `https://api.mostlygoodmetrics.com/mcp` (streamable HTTP)
 
 ## Connect
 
