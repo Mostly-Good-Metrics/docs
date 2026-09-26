@@ -30,6 +30,8 @@ A lightweight Swift SDK for iOS, macOS, tvOS, watchOS, and visionOS.
 
 ## Installation
 
+The Swift SDK is distributed through Swift Package Manager.
+
 Use Swift SDK **1.0.1 or later** for the bounded property, storage, and network failure handling described below. Swift 1.0.0 introduced the actor contracts covered in the migration guidance.
 
 ### Swift Package Manager
@@ -43,20 +45,6 @@ dependencies: [
 ```
 
 Or in Xcode: **File > Add Package Dependencies**, enter the repository URL, and select **Up to Next Major Version** starting at **1.0.1**.
-
-### CocoaPods
-
-Install 1.0.1 from its Git tag:
-
-```ruby
-pod 'MostlyGoodMetrics',
-    :git => 'https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk.git',
-    :tag => '1.0.1'
-```
-
-Then run `pod install`. The release workflow does not publish to the CocoaPods
-registry; a registry version requirement alone will not fetch this release.
-See the [CocoaPods Git dependency guide](https://guides.cocoapods.org/using/the-podfile.html#from-a-podspec-in-the-root-of-a-library-repo).
 
 ## Quick Start
 
@@ -310,7 +298,7 @@ Its returned values are evaluated per event and are not persisted as super prope
 
 When upgrading from `0.x`, raise the Swift Package Manager requirement to
 `from: "1.0.1"`; a requirement starting at `0.x` does not include the new major
-version. CocoaPods users should update the Git tag shown above.
+version.
 
 SDK versions through `0.11.0` do not enforce this callback contract. The explicit
 `@Sendable` closure above is the immediate workaround for those versions and also
@@ -381,7 +369,7 @@ while analytics delivery remains best effort.
 
 The SDK never reads the IDFA and never triggers an App Tracking Transparency prompt, and it collects no location, contacts, or other sensitive data. `identify()` is optional — without it, users are tracked under a random, app-scoped anonymous ID (`$anon_...`) that is not derived from the device.
 
-Swift SDK 1.0.0 and later bundle an Apple privacy manifest with both Swift Package Manager and CocoaPods; no extra MGM manifest setup is needed. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the declarations and your app's privacy-label answers.
+Swift SDK 1.0.0 and later bundle an Apple privacy manifest in the Swift package; no extra MGM manifest setup is needed. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the declarations and your app's privacy-label answers.
 
 ### Opt-out
 
