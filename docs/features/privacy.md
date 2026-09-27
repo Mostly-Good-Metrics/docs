@@ -214,17 +214,16 @@ may be moved to verified archival storage in the future if needed, but MGM will
 not remove primary rows through an automatic storage lifecycle until a
 recoverable archived copy and restoration path exist.
 
-PostgreSQL holds the recovery copy of accepted events and user profiles.
+PostgreSQL `events` is the exact recovery copy of events.
 ClickHouse holds event-level analytics without an automatic TTL, and historical
 daily aggregates preserve long-term event totals. Any organization member can
 open **Organization Settings → Data storage** to review this policy.
 
-This lifecycle policy does not prevent intentional deletion. Per-user privacy
-erasure and account deletion continue to remove the data in their documented
-scope and override preservation. The paid preservation commitment ends when the
+This lifecycle policy does not prevent intentional deletion. Account deletion
+removes data for organizations the user solely owns; otherwise the user is
+removed from the organization. The paid preservation commitment ends when the
 subscription and any billing grace period end; no automatic post-termination
-deletion is currently scheduled. If MGM introduces one later, we will provide
-notice before enabling it and document its safety controls here.
+deletion is currently scheduled.
 
 ## Environment tagging
 
