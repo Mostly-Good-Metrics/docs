@@ -216,8 +216,8 @@ recoverable archived copy and restoration path exist.
 
 PostgreSQL holds the recovery copy of accepted events and user profiles.
 ClickHouse holds event-level analytics without an automatic TTL, and historical
-daily aggregates preserve long-term event totals. Organization owners and
-admins can open **Organization Settings → Data storage** to review this policy.
+daily aggregates preserve long-term event totals. Any organization member can
+open **Organization Settings → Data storage** to review this policy.
 
 This lifecycle policy does not prevent intentional deletion. Per-user privacy
 erasure and account deletion continue to remove the data in their documented
