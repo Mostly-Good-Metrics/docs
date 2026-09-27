@@ -203,16 +203,27 @@ Pre-computed historical aggregates (e.g. past chart totals) are not recomputed, 
 
 Pair this with the SDK-side "forget me" reset so the device stops sending linkable events.
 
-## Data retention
+## Data preservation and analytics history
 
-Events are retained according to your organization's plan and deleted by daily cleanup jobs after the window:
+MGM does not currently run automatic raw-data deletion. Permanent lifecycle
+deletion is not scheduled for free or paid organizations.
 
-| Plan | Retention |
-|------|-----------|
-| Free | 30 days |
-| Starter | 90 days |
-| Pro | 365 days |
-| Enterprise | Unlimited |
+Active paid subscriptions include preservation of raw event history for the
+subscription lifetime, including any billing grace period. Preserved paid data
+may be moved to verified archival storage in the future if needed, but MGM will
+not remove primary rows through an automatic storage lifecycle until a
+recoverable archived copy and restoration path exist.
+
+PostgreSQL `events` is the exact recovery copy of events.
+ClickHouse holds event-level analytics without an automatic TTL, and historical
+daily aggregates preserve long-term event totals. Any organization member can
+open **Organization Settings → Data storage** to review this policy.
+
+This lifecycle policy does not prevent intentional deletion. Account deletion
+removes data for organizations the user solely owns; otherwise the user is
+removed from the organization. The paid preservation commitment ends when the
+subscription and any billing grace period end; no automatic post-termination
+deletion is currently scheduled.
 
 ## Environment tagging
 
