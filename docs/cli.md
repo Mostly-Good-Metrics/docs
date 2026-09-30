@@ -51,6 +51,7 @@ Most project-scoped commands read the project from `.mgm.json` (created by `mgm 
 | `mgm retention list\|create\|execute\|delete` | Retention analyses |
 | `mgm queries list\|create\|execute\|delete` | Saved and ad-hoc queries |
 | `mgm experiments ...` | Manage and start/stop experiments |
+| `mgm goals list\|create\|show` | Create goals and inspect live progress and pace |
 | `mgm widgets list\|add\|remove\|reset` | Manage dashboard widgets |
 
 Run `mgm <command> --help` for full options.
@@ -66,6 +67,18 @@ mgm queries execute --metric unique_users --group-by date --range 7d --json
 
 # Create a production key restricted to one Apple bundle ID
 mgm keys create "iOS Production" --project prj_123 --environment production --allow com.example.app
+
+# Create a 30-day purchase goal
+mgm goals create \
+  --source '{"type":"event_count","event_name":"purchase"}' \
+  --target-type reach \
+  --target 1000 \
+  --window '{"type":"rolling","days":30}' \
+  --notify-on both
+
+# Read current progress, pace, and projected finish
+mgm goals list
+mgm goals show <goal-id>
 ```
 
 `mgm init` and `mgm keys create` require an explicit access mode. Prefer one or

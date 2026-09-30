@@ -40,11 +40,17 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 | Retention | `list_retentions`, `get_retention`, `create_retention`, `update_retention`, `delete_retention`, `execute_retention` |
 | Queries | `list_queries`, `get_query`, `create_query`, `update_query`, `delete_query`, `execute_query`, `query_metrics` |
 | Experiments | `list_experiments`, `get_experiment`, `create_experiment`, `update_experiment`, `delete_experiment`, `start_experiment`, `stop_experiment` |
+| Goals | `list_goals`, `get_goal`, `create_goal`, `update_goal`, `delete_goal` |
 
 Ad-hoc analysis works without saving anything: `execute_funnel`,
 `execute_retention`, and `execute_query` all accept inline definitions,
 so an assistant can answer "where do users drop off between signup and
 purchase?" in one call.
+
+Goal reads return the stored source, target, window, and notification settings
+alongside live `current_value`, `percent_complete`, pace text, projected finish,
+and newly crossed 25/50/75/100 milestones. Goal data is derived from the events
+you already send; no SDK payload change is required.
 
 ### Query several metrics efficiently
 
