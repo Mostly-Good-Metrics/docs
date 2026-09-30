@@ -59,3 +59,7 @@ A `429` response includes `retry_after` (seconds) in the body and a `Retry-After
 ## CORS
 
 The API sends `Access-Control-Allow-Origin: *`, so browser clients can call it directly — API keys used in browsers are visible to users, which is expected for client-side analytics. Use the allowed-identifiers list to pin a key to your domains.
+
+## Management API
+
+Goals are not ingestion endpoints. Create and read them on the [Goals API](/api/goals) at `https://api.mostlygoodmetrics.com/api/v2`, with the user access token from `mgm login`.
