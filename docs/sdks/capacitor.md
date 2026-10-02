@@ -13,8 +13,10 @@ The official Capacitor SDK for hybrid mobile apps.
 
 ## Installation
 
+Use Capacitor SDK **0.5.1 or later** for the native storage, initialization, and lifecycle safeguards described below.
+
 ```bash
-npm install @mostly-good-metrics/capacitor
+npm install @mostly-good-metrics/capacitor@^0.5.1
 ```
 
 ### Required Peer Dependencies

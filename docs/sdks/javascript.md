@@ -13,8 +13,10 @@ A lightweight JavaScript/TypeScript SDK for web applications.
 
 ## Installation
 
+Use JavaScript SDK **0.13.1 or later** for the exception containment and bounded event storage described below.
+
 ```bash
-npm install @mostly-good-metrics/javascript
+npm install @mostly-good-metrics/javascript@^0.13.1
 ```
 
 ## Quick Start

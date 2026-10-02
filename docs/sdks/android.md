@@ -13,11 +13,13 @@ A lightweight Android SDK for tracking analytics events.
 
 ## Installation
 
+Use Android SDK **0.7.1 or later** for the background failure containment and bounded event storage described below.
+
 ### Gradle (Kotlin DSL)
 
 ```kotlin
 dependencies {
-    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.0")
+    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.1")
 }
 ```
 

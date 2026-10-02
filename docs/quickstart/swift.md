@@ -13,17 +13,19 @@ Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and cr
 
 ## 2. Install
 
+Use **1.0.1 or later** for the SDK safety fixes; see the [Swift SDK guide](/sdks/swift) for actor-contract migration guidance.
+
 In Xcode: **File > Add Package Dependencies** and enter:
 
 ```
 https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk
 ```
 
-Or add it to your `Package.swift`:
+Select **Up to Next Major Version** starting at **1.0.1**. Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "1.0.0")
+    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "1.0.1")
 ]
 ```
 

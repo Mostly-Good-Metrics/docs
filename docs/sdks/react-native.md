@@ -13,10 +13,12 @@ A lightweight React Native SDK for iOS and Android.
 
 ## Installation
 
+Use React Native SDK **0.9.1 or later** for the native storage, initialization, and teardown safeguards described below.
+
 ### Expo (Recommended)
 
 ```bash
-npm install @mostly-good-metrics/react-native
+npm install @mostly-good-metrics/react-native@^0.9.1
 ```
 
 That's it! Expo includes AsyncStorage by default.
@@ -24,7 +26,7 @@ That's it! Expo includes AsyncStorage by default.
 ### Bare React Native
 
 ```bash
-npm install @mostly-good-metrics/react-native @react-native-async-storage/async-storage
+npm install @mostly-good-metrics/react-native@^0.9.1 @react-native-async-storage/async-storage
 cd ios && pod install
 ```
 

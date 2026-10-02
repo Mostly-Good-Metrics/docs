@@ -13,6 +13,8 @@ Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and cr
 
 ## 2. Install
 
+Use **0.7.1 or later** for the SDK safety fixes; see the [Android SDK guide](/sdks/android) for failure handling.
+
 Add the JitPack repository to your `settings.gradle.kts`:
 
 ```kotlin
@@ -27,7 +29,7 @@ Then add the dependency:
 
 ```kotlin
 dependencies {
-    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.0")
+    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.1")
 }
 ```
 

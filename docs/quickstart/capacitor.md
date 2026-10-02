@@ -13,8 +13,10 @@ Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and cr
 
 ## 2. Install
 
+Use **0.5.1 or later** for the SDK safety fixes; see the [Capacitor SDK guide](/sdks/capacitor) for native failure handling.
+
 ```bash
-npm install @mostly-good-metrics/capacitor
+npm install @mostly-good-metrics/capacitor@^0.5.1
 npm install @capacitor/core @capacitor/app @capacitor/device @capacitor/preferences
 npx cap sync
 ```
