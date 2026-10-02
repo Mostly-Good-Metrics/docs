@@ -56,6 +56,8 @@ Create and update both require `source`, `target_type`, `target`, `window`, and 
     "target": 1000.0,
     "window": { "type": "deadline", "start_date": "2026-10-01", "deadline": "2026-10-31" },
     "notify_on": "both",
+    "evaluation_status": "available",
+    "evaluation_error": null,
     "current_value": 200.0,
     "percent_complete": 20.0,
     "pace_line": {
@@ -74,13 +76,13 @@ Create and update both require `source`, `target_type`, `target`, `window`, and 
 }
 ```
 
-`pace_line.status` is one of `behind`, `on_pace`, `ahead`, `complete`, `open_ended`, `on_target`, `off_target`, `on_track`, or `broken`, depending on the target type. `pace_line_text` repeats `pace_line.text`. `milestone_crossings` lists the 25, 50, 75, or 100 marks crossed since the previous day. `projected_finish` is a date or `null`.
+`pace_line.status` is one of `behind`, `on_pace`, `ahead`, `complete`, `open_ended`, `on_target`, `off_target`, `on_track`, or `broken`, depending on the target type. `pace_line_text` repeats `pace_line.text`. `milestone_crossings` lists the 25, 50, 75, or 100 marks crossed since the previous day. `projected_finish` is a date or `null`. Rolling windows accept `days` from 1 through 3,650.
 
 `GET` list returns `{ "goals": [ ... ] }` in newest-first order. `GET` one goal and `PATCH` return `{ "goal": { ... } }` in the same shape. `PATCH` takes the same five fields as create. The project cannot be changed.
 
 `DELETE` returns `{ "deleted": true }`.
 
-List and get evaluate every requested goal before responding. A definition that cannot be measured — an unknown source, a missing saved funnel, a retention day other than 1, 7, or 30 — fails the request instead of returning a stale number.
+List and get evaluate every requested goal before responding. If a stored definition cannot be measured, that goal remains in the response with `evaluation_status: "unavailable"`, a safe `evaluation_error`, `null` for `current_value` and `percent_complete`, and `pace_line.status: "unavailable"`. Other goals remain available. Create and update evaluate atomically: an invalid definition returns `400` and is not persisted.
 
 ## Errors
 

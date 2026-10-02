@@ -79,7 +79,7 @@ mgm goals list
 mgm goals show <goal-id>
 ```
 
-Goal sources, target types, and windows are documented in [Goals](/features/goals). `mgm goals list` and `mgm goals show` print the live value, percent complete, pace text, and projected finish.
+Goal sources, target types, and windows are documented in [Goals](/features/goals). `mgm goals list` and `mgm goals show` print the live value, percent complete, pace text, and projected finish. An unavailable goal stays in the output with its progress marked unavailable instead of hiding healthy goals.
 
 `mgm init` and `mgm keys create` require an explicit access mode. Prefer one or
 more `--allow` values for Apple bundle IDs, Android package names/application

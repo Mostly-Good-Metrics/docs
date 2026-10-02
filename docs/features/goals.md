@@ -20,7 +20,7 @@ A goal stores only its definition:
 
 Current value, percent complete, pace, projected finish, and milestone crossings are calculated on read. They are not saved, so a goal always reflects the latest analytics.
 
-A pace line compares how fast the metric is moving with how fast it needs to move. A reach goal that is behind reads like `12% behind — need +40/day`. That line is also what the dashboard rail, the iOS app, and the Home Screen widgets show.
+A pace line compares how fast the metric is moving with how fast it needs to move. A reach goal that is behind reads like `12% behind — need +40/day`. That line is also what dashboard goal widgets, the iOS app, and Home Screen widgets show.
 
 ## Target types
 
@@ -70,7 +70,7 @@ For a threshold, set direction on the source:
 { "type": "open_ended", "start_date": "2026-10-01" }
 ```
 
-Dates are `YYYY-MM-DD`. A deadline's start is on or before its end. A rolling window is the last N days, including today. An open-ended window runs from the start date forward and has no required daily rate.
+Dates are `YYYY-MM-DD`. A deadline's start is on or before its end. A rolling window is the last N days, including today, and accepts 1 through 3,650 days. An open-ended window runs from the start date forward and has no required daily rate.
 
 ## Create a goal
 
@@ -82,13 +82,13 @@ Open **Goals** in the project (`/organizations/{org}/projects/{project}/goals`) 
 - **How much?** — a number greater than zero
 - **By when?** — today or a later date
 
-That creates a `reach` goal with a deadline that starts today. Tracked events counts every event in the project, and Revenue is USD. The project dashboard shows the three most recently created goals in a rail above the charts, each with a ring and one pace line. The Goals page has the full value, target, projected finish, and actual-versus-required pace chart. Edit and delete are on that page. Deleting a goal removes the target. It does not delete events.
+That creates a `reach` goal with a deadline that starts today. Tracked events counts every event in the project, and Revenue is USD. Add an individual goal to the project dashboard from **Edit dashboard → Goal**. The Goals page has the full value, target, projected finish, and actual-versus-required pace chart. Edit and delete are on that page. Deleting a goal also removes its dashboard widget, but never deletes events.
 
 The drawer does not cover every source or target type. Use the CLI, MCP, or API for a single event, a funnel, retention, a saved query, a rolling window, or a threshold, growth, or streak goal. Editing one of those goals on the web keeps its source as **Current metric** and still edits the number and deadline.
 
 ### iOS
 
-The iOS app shows goals you have already created. Home includes a goals rail. A goal opens to the ring, current value, target, pace line, and projected finish. Small and medium Home Screen widgets show the same ring and pace line for a project, including when the phone is offline after a refresh.
+The iOS app shows goals you have already created. Home includes a goals rail, and a goal opens to its current value, target, pace, and projected finish. Small and medium Home Screen widgets show the same live status for a project, including when the phone is offline after a refresh.
 
 Create and edit goals on the web or with the CLI, MCP, or API. The app reads the project's goals from the [Goals API](/api/goals).
 
@@ -106,7 +106,7 @@ mgm goals list
 mgm goals show <goal-id>
 ```
 
-`--source` and `--window` are JSON objects. `--target-type` is `reach`, `threshold`, `growth`, or `streak`. `--notify-on` is `milestone`, `off_pace`, `both`, or `off`. Add `--json` for the full snapshot, or `--project` when `.mgm.json` is not the project you want. `list` and `show` print the live value, percent complete, pace text, and projected finish.
+`--source` and `--window` are JSON objects. `--target-type` is `reach`, `threshold`, `growth`, or `streak`. `--notify-on` is `milestone`, `off_pace`, `both`, or `off`. Add `--json` for the full snapshot, or `--project` when `.mgm.json` is not the project you want. `list` and `show` print the live value, percent complete, pace text, and projected finish. If one goal cannot be evaluated, it remains visible as **Progress unavailable** while healthy goals continue to load.
 
 ### MCP
 
