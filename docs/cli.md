@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # CLI
 
-The MostlyGoodMetrics CLI (`mgm`) manages projects, API keys, and dashboards, and runs funnels, retention, and queries from your terminal.
+The MostlyGoodMetrics CLI (`mgm`) manages projects, API keys, dashboards, and goals, and runs funnels, retention, and queries from your terminal.
 
 ## Install
 
@@ -51,6 +51,7 @@ Most project-scoped commands read the project from `.mgm.json` (created by `mgm 
 | `mgm retention list\|create\|execute\|delete` | Retention analyses |
 | `mgm queries list\|create\|execute\|delete` | Saved and ad-hoc queries |
 | `mgm experiments ...` | Manage and start/stop experiments |
+| `mgm goals list\|create\|show` | Create goals and read live progress and pace |
 | `mgm widgets list\|add\|remove\|reset` | Manage dashboard widgets |
 
 Run `mgm <command> --help` for full options.
@@ -66,7 +67,19 @@ mgm queries execute --metric unique_users --group-by date --range 7d --json
 
 # Create a production key restricted to one Apple bundle ID
 mgm keys create "iOS Production" --project prj_123 --environment production --allow com.example.app
+
+# Reach 1,000 purchases by a date, then read pace
+mgm goals create \
+  --source '{"type":"event_count","event_name":"purchase_completed"}' \
+  --target-type reach \
+  --target 1000 \
+  --window '{"type":"deadline","start_date":"2026-10-01","deadline":"2026-10-31"}' \
+  --notify-on both
+mgm goals list
+mgm goals show <goal-id>
 ```
+
+Goal sources, target types, and windows are documented in [Goals](/features/goals). `mgm goals list` and `mgm goals show` print the live value, percent complete, pace text, and projected finish. An unavailable goal stays in the output with its progress marked unavailable instead of hiding healthy goals.
 
 `mgm init` and `mgm keys create` require an explicit access mode. Prefer one or
 more `--allow` values for Apple bundle IDs, Android package names/application

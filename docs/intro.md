@@ -45,6 +45,7 @@ Once events are flowing, the dashboard fills in on its own — event counts, act
 - [Funnels](/features/funnels) — where users drop off in multi-step flows
 - [Retention](/features/retention) — cohort tables showing who comes back
 - [Experiments](/features/experiments) — server-assigned A/B tests
+- [Goals](/features/goals) — a target and a pace line for a metric you already track
 
 ## What the SDKs handle for you
 
