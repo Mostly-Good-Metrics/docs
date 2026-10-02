@@ -263,7 +263,10 @@ MostlyGoodMetrics.track("checkout", properties: [
 ### Dynamic global properties
 
 Use `contextProvider` for values that change during a session. It is evaluated
-for every event and is not persisted:
+for every event and is not persisted. The provider runs synchronously on the
+thread calling `track()`. If it reads main-actor UI state, call `track()` from the
+main actor. For tracking from several threads, the provider must safely support
+those callers:
 
 ```swift
 let config = MGMConfiguration(
@@ -282,15 +285,24 @@ property keys using that prefix.
 Events are automatically flushed periodically and when the app backgrounds. You can also trigger a manual flush:
 
 ```swift
-MostlyGoodMetrics.shared?.flush { result in
-    switch result {
-    case .success:
-        print("Events flushed successfully")
-    case .failure(let error):
-        print("Flush failed: \(error.localizedDescription)")
+MostlyGoodMetrics.shared?.flush { @Sendable result in
+    Task { @MainActor in
+        switch result {
+        case .success:
+            print("Events flushed successfully")
+        case .failure(let error):
+            print("Flush failed: \(error.localizedDescription)")
+        }
+        // Update UI state here.
     }
 }
 ```
+
+The explicit `@Sendable` callback and `Task { @MainActor in ... }` also support
+SDK versions through `0.11.0`, which may invoke flush completions on a background
+queue. Without that boundary, a callback created in a main-actor context can
+inherit its isolation and crash when invoked off the main actor. Keep UI access
+inside the main-actor task.
 
 ## Privacy
 
