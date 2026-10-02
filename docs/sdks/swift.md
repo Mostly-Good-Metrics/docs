@@ -36,11 +36,25 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.11.0")
+    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "1.0.0")
 ]
 ```
 
 Or in Xcode: **File > Add Package Dependencies** and enter the repository URL.
+
+### CocoaPods
+
+Install 1.0.0 from its Git tag:
+
+```ruby
+pod 'MostlyGoodMetrics',
+    :git => 'https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk.git',
+    :tag => '1.0.0'
+```
+
+Then run `pod install`. The release workflow does not publish to the CocoaPods
+registry; a registry version requirement alone will not fetch this release.
+See the [CocoaPods Git dependency guide](https://guides.cocoapods.org/using/the-podfile.html#from-a-podspec-in-the-root-of-a-library-repo).
 
 ## Quick Start
 
@@ -262,15 +276,52 @@ MostlyGoodMetrics.track("checkout", properties: [
 
 ### Dynamic global properties
 
-Use `contextProvider` for values that change during a session. It is evaluated
-for every event and is not persisted:
+`contextProvider` is a synchronous `@Sendable` callback. It runs on whichever
+executor calls `track()`, including background execution, and may be called
+concurrently. Capture immutable Sendable values or read a synchronized store;
+do not directly read SwiftUI or other actor-isolated state. Return value
+snapshots rather than shared mutable objects.
+
+Read actor-isolated values before creating the provider:
 
 ```swift
-let config = MGMConfiguration(
-    apiKey: "mgm_proj_your_api_key",
-    contextProvider: { ["organization_id": currentOrganization.id] }
-)
+@MainActor
+func configureAnalytics(organizationID: String, buildChannel: String) {
+    let config = MGMConfiguration(
+        apiKey: "mgm_proj_your_api_key",
+        contextProvider: { @Sendable in
+            ["organization_id": organizationID, "build_channel": buildChannel]
+        }
+    )
+    MostlyGoodMetrics.configure(with: config)
+}
 ```
+
+These snapshots retain their initial values. For UI values that change during a
+session, update super properties from the actor that owns that state and leave
+those keys out of the provider; provider values override super properties.
+Alternatively, use a synchronized Sendable store to return current snapshots.
+The provider cannot asynchronously fetch main-actor state for the current event.
+Its returned values are evaluated per event and are not persisted as super properties.
+
+#### Swift 6 migration
+
+When upgrading to 1.0.0, raise the Swift Package Manager requirement to
+`from: "1.0.0"`; a requirement starting at `0.x` does not include the new major
+version. CocoaPods users should update the Git tag shown above.
+
+SDK versions through `0.11.0` do not enforce this callback contract. The explicit
+`@Sendable` closure above is the immediate workaround for those versions and also
+works with SDK 1.0.0. SDK 1.0.0 requires `@Sendable` on both the
+configuration property and initializer parameter. Existing provider variables
+may need the explicit type `@Sendable () -> [String: Any]`, and unsafe captures
+may now produce compiler errors. Replace those captures with immutable typed
+values or genuinely synchronized state. A captured `[String: Any]` dictionary
+is not itself Sendable.
+
+`@Sendable` does not synchronize mutable captures. Suppressing concurrency
+diagnostics or wrapping `track()` in `do/catch` cannot prevent an executor
+assertion from terminating the app.
 
 Collision precedence is: persisted super properties < dynamic context < event
 properties < MGM system properties. `$`-prefixed keys are reserved for MGM. In
@@ -279,18 +330,35 @@ property keys using that prefix.
 
 ## Manual Flush
 
+SDK 1.0.0 accepts `MGMFlushCompletion`, defined as
+`@MainActor @Sendable (Result<Void, MGMError>) -> Void`. It delivers results
+asynchronously on the main actor on every completion path. Event storage and
+network work remain in the background. Inline completions can update main-actor
+UI state; existing completion variables may need the `MGMFlushCompletion` type.
+To update another actor, create a task that calls that actor from inside the
+completion. Do not pass a closure isolated to that other actor directly.
+
 Events are automatically flushed periodically and when the app backgrounds. You can also trigger a manual flush:
 
 ```swift
-MostlyGoodMetrics.shared?.flush { result in
-    switch result {
-    case .success:
-        print("Events flushed successfully")
-    case .failure(let error):
-        print("Flush failed: \(error.localizedDescription)")
+MostlyGoodMetrics.shared?.flush { @Sendable result in
+    Task { @MainActor in
+        switch result {
+        case .success:
+            print("Events flushed successfully")
+        case .failure(let error):
+            print("Flush failed: \(error.localizedDescription)")
+        }
+        // Update UI state here.
     }
 }
 ```
+
+The explicit `@Sendable` callback and `Task { @MainActor in ... }` also support
+SDK versions through `0.11.0`, which may invoke flush completions on a background
+queue. Without that boundary, a callback created in a main-actor context can
+inherit its isolation and crash when invoked off the main actor. Keep UI access
+inside the main-actor task.
 
 ## Privacy
 
@@ -379,4 +447,8 @@ Output example:
 
 ## Thread Safety
 
-The SDK is fully thread-safe. You can call `track()` from any thread.
+You can call `track()` from background execution when provider captures and
+event properties are safe for those callers. Configure the shared instance once
+at app startup before other SDK calls; do not reconfigure it concurrently.
+Providers must support concurrent calls and must not directly read actor-isolated
+UI state. See the Swift 6 migration guidance above.
