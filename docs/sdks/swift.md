@@ -262,18 +262,48 @@ MostlyGoodMetrics.track("checkout", properties: [
 
 ### Dynamic global properties
 
-Use `contextProvider` for values that change during a session. It is evaluated
-for every event and is not persisted. The provider runs synchronously on the
-thread calling `track()`. If it reads main-actor UI state, call `track()` from the
-main actor. For tracking from several threads, the provider must safely support
-those callers:
+`contextProvider` is a synchronous `@Sendable` callback. It runs on whichever
+executor calls `track()`, including background execution, and may be called
+concurrently. Capture immutable Sendable values or read a synchronized store;
+do not directly read SwiftUI or other actor-isolated state. Return value
+snapshots rather than shared mutable objects.
+
+Read actor-isolated values before creating the provider:
 
 ```swift
-let config = MGMConfiguration(
-    apiKey: "mgm_proj_your_api_key",
-    contextProvider: { ["organization_id": currentOrganization.id] }
-)
+@MainActor
+func configureAnalytics(organizationID: String, buildChannel: String) {
+    let config = MGMConfiguration(
+        apiKey: "mgm_proj_your_api_key",
+        contextProvider: { @Sendable in
+            ["organization_id": organizationID, "build_channel": buildChannel]
+        }
+    )
+    MostlyGoodMetrics.configure(with: config)
+}
 ```
+
+These snapshots retain their initial values. For UI values that change during a
+session, update super properties from the actor that owns that state and leave
+those keys out of the provider; provider values override super properties.
+Alternatively, use a synchronized Sendable store to return current snapshots.
+The provider cannot asynchronously fetch main-actor state for the current event.
+Its returned values are evaluated per event and are not persisted as super properties.
+
+#### Swift 6 migration
+
+SDK versions through `0.11.0` do not enforce this callback contract. The explicit
+`@Sendable` closure above is the immediate workaround for those versions and also
+works with the corrected SDK. The corrected SDK requires `@Sendable` on both the
+configuration property and initializer parameter. Existing provider variables
+may need the explicit type `@Sendable () -> [String: Any]`, and unsafe captures
+may now produce compiler errors. Replace those captures with immutable typed
+values or genuinely synchronized state. A captured `[String: Any]` dictionary
+is not itself Sendable.
+
+`@Sendable` does not synchronize mutable captures. Suppressing concurrency
+diagnostics or wrapping `track()` in `do/catch` cannot prevent an executor
+assertion from terminating the app.
 
 Collision precedence is: persisted super properties < dynamic context < event
 properties < MGM system properties. `$`-prefixed keys are reserved for MGM. In
@@ -391,4 +421,8 @@ Output example:
 
 ## Thread Safety
 
-The SDK is fully thread-safe. You can call `track()` from any thread.
+You can call `track()` from background execution when provider captures and
+event properties are safe for those callers. Configure the shared instance once
+at app startup before other SDK calls; do not reconfigure it concurrently.
+Providers must support concurrent calls and must not directly read actor-isolated
+UI state. See the Swift 6 migration guidance above.
