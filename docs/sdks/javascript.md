@@ -162,6 +162,30 @@ MostlyGoodMetrics.configure({
 explicit event properties and MGM system properties take precedence. With
 `enableDebugLogging`, MGM warns when custom properties use reserved `$` keys.
 
+## Callback and failure handling
+
+`contextProvider` runs synchronously on the JavaScript caller. Return ordinary
+JSON-like values; asynchronous providers are unsupported. Provider exceptions
+are contained, unreadable property getters are omitted, and traversal of nested
+objects and arrays is bounded. Properties are copied at capture time, including
+super properties.
+
+Automatic batch, timer, and page-exit work handles storage and network failures
+internally. If an error callback returns a rejected promise, MGM observes that
+rejection without waiting for the callback to complete. Explicitly awaited
+operations retain their failure contract for custom adapters:
+
+```typescript
+try {
+  await MostlyGoodMetrics.flush();
+} catch (error) {
+  // Handle an unexpected failure from a custom storage or network adapter.
+}
+```
+
+Also handle promises returned by `clearPendingEvents()` and
+`getPendingEventCount()` when using custom adapters.
+
 ## Privacy
 
 The SDK collects no advertising identifiers or precise client location.

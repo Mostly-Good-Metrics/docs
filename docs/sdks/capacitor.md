@@ -121,6 +121,19 @@ Dynamic context overrides super properties; explicit event properties and MGM
 system properties take precedence. With `enableDebugLogging`, MGM warns when
 custom properties use reserved `$` keys.
 
+## Failure handling and teardown
+
+The SDK uses the JavaScript core with Capacitor storage and lifecycle adapters.
+Storage failures fall back to memory. Damaged persisted event queues are
+recovered while valid events are retained, and native listener cleanup handles
+both thrown errors and rejected removal promises.
+
+Call `MostlyGoodMetrics.destroy()` when tearing down the SDK. Pending
+initialization cannot recreate the client or overwrite a later configuration;
+listeners that finish registering after teardown are removed. `flush()` handles
+delivery errors internally and can be awaited to wait for the attempt to finish;
+resolution does not guarantee server acceptance.
+
 ## Privacy
 
 The SDK never collects advertising identifiers, location, or anything you don't explicitly pass to `track()` or `identify()`. `identify()` is optional — without it, users are tracked under a random, resettable anonymous ID (`$anon_...`).

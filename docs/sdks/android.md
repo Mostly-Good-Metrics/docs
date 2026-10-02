@@ -141,6 +141,25 @@ Every event automatically includes:
 | `$device_type` | `"phone"` | Device type (phone, tablet, tv, watch) |
 | `$device_model` | `"Pixel 8"` | Device model |
 
+## Callback threads and failure handling
+
+`contextProvider` runs synchronously on the thread calling `track()`. It can run
+on background threads and concurrently. Return an immutable snapshot or use a
+synchronized store; do not read Android views directly from this callback.
+
+```kotlin
+MostlyGoodMetrics.flush { result ->
+    // This optional completion runs on the main thread.
+    result.onFailure { error -> /* report the delivery failure */ }
+}
+```
+
+Event delivery stays in the background. MGM contains ordinary exceptions from
+the provider, property conversion, background work, and the flush completion.
+Recursive property containers are bounded rather than recursively exhausting
+the stack. Coroutine cancellation and fatal JVM errors retain their normal
+behavior.
+
 ## Privacy
 
 The SDK never accesses the Advertising ID (AAID), location, contacts, or any other personal data from the device. `identify()` is entirely optional — without it, users are tracked only under a random, resettable anonymous ID (`$anon_...`).
