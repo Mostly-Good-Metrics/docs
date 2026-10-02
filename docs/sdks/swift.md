@@ -36,11 +36,25 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "0.11.0")
+    .package(url: "https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk", from: "1.0.0")
 ]
 ```
 
 Or in Xcode: **File > Add Package Dependencies** and enter the repository URL.
+
+### CocoaPods
+
+Install 1.0.0 from its Git tag:
+
+```ruby
+pod 'MostlyGoodMetrics',
+    :git => 'https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk.git',
+    :tag => '1.0.0'
+```
+
+Then run `pod install`. The release workflow does not publish to the CocoaPods
+registry; a registry version requirement alone will not fetch this release.
+See the [CocoaPods Git dependency guide](https://guides.cocoapods.org/using/the-podfile.html#from-a-podspec-in-the-root-of-a-library-repo).
 
 ## Quick Start
 
@@ -292,9 +306,13 @@ Its returned values are evaluated per event and are not persisted as super prope
 
 #### Swift 6 migration
 
+When upgrading to 1.0.0, raise the Swift Package Manager requirement to
+`from: "1.0.0"`; a requirement starting at `0.x` does not include the new major
+version. CocoaPods users should update the Git tag shown above.
+
 SDK versions through `0.11.0` do not enforce this callback contract. The explicit
 `@Sendable` closure above is the immediate workaround for those versions and also
-works with the corrected SDK. The corrected SDK requires `@Sendable` on both the
+works with SDK 1.0.0. SDK 1.0.0 requires `@Sendable` on both the
 configuration property and initializer parameter. Existing provider variables
 may need the explicit type `@Sendable () -> [String: Any]`, and unsafe captures
 may now produce compiler errors. Replace those captures with immutable typed
@@ -312,7 +330,7 @@ property keys using that prefix.
 
 ## Manual Flush
 
-The corrected SDK accepts `MGMFlushCompletion`, defined as
+SDK 1.0.0 accepts `MGMFlushCompletion`, defined as
 `@MainActor @Sendable (Result<Void, MGMError>) -> Void`. It delivers results
 asynchronously on the main actor on every completion path. Event storage and
 network work remain in the background. Inline completions can update main-actor
