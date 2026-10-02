@@ -186,6 +186,16 @@ try {
 Also handle promises returned by `clearPendingEvents()` and
 `getPendingEventCount()` when using custom adapters.
 
+Built-in event stores enforce a 1 MiB serialized event-data ceiling as well as
+`maxStoredEvents`. They drop the oldest events when either limit is reached and
+reject oversized persisted queues before parsing. Analytics can be dropped to
+protect the host during long offline periods; a custom storage adapter must
+enforce its own resource limits.
+
+Call `MostlyGoodMetrics.reset()` when tearing down the singleton. This stops
+its timers, removes browser hooks, and aborts its built-in network requests.
+Late responses from the destroyed instance cannot update its experiment cache.
+
 ## Privacy
 
 The SDK collects no advertising identifiers or precise client location.

@@ -157,8 +157,15 @@ MostlyGoodMetrics.flush { result ->
 Event delivery stays in the background. MGM contains ordinary exceptions from
 the provider, property conversion, background work, and the flush completion.
 Recursive property containers are bounded rather than recursively exhausting
-the stack. Coroutine cancellation and fatal JVM errors retain their normal
-behavior.
+the stack. Cancellation of SDK coroutine work and fatal JVM errors retain their
+normal behavior. A completion that throws is contained.
+
+The built-in event stores also enforce a 1 MiB estimated event-data ceiling in
+addition to `maxStoredEvents`. Oldest events are dropped when either limit is
+reached; oversized events and damaged or oversized persisted queues may be
+discarded. Automatic flush requests are coalesced during bursts. These limits
+protect the host while offline or when storage is slow, so analytics delivery
+remains best effort.
 
 ## Privacy
 

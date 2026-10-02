@@ -135,6 +135,22 @@ a later configuration. `flush()` handles delivery errors internally and can be
 awaited to wait for the attempt to finish; resolution does not guarantee server
 acceptance.
 
+
+`ready(timeoutMs)` applies its deadline to native initialization as well as
+experiment readiness. An unavailable native operation times out after five
+seconds; later calls use current-process memory for that storage key. Writes
+are coalesced so a stalled plugin cannot build an unbounded chain. A timed-out
+write is not canceled by JavaScript, so the SDK avoids issuing newer writes
+that the old operation could overwrite. This fallback is not durable across
+process restarts. Unreadable or malformed native consent disables tracking
+until an explicit `optIn()` or `optOut()` choice.
+
+Startup calls and the built-in native event adapter each have a 1 MiB retained
+data budget in addition to event-count limits. Events can be dropped when
+those budgets are full or when persisted data is oversized or damaged. Event
+properties are copied before queuing. Teardown invalidates old adapter work,
+so a late read or save cannot resurrect an abandoned event queue.
+
 ## Privacy
 
 The SDK never collects advertising identifiers, location, or anything you don't explicitly pass to `track()` or `identify()`. `identify()` is optional — without it, users are tracked under a random, resettable anonymous ID (`$anon_...`).
@@ -147,7 +163,7 @@ MostlyGoodMetrics.optIn();       // resume tracking
 MostlyGoodMetrics.isOptedOut();  // current state
 ```
 
-While opted out, tracking calls are no-ops and queued (unsent) events are purged. The choice is persisted in AsyncStorage and survives restarts.
+While opted out, tracking calls are no-ops and queued (unsent) events are purged. The SDK attempts to persist the choice in AsyncStorage so it survives restarts when native storage is available.
 
 For consent-first apps (e.g. GDPR), start opted out and call `optIn()` after consent:
 

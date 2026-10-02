@@ -360,6 +360,21 @@ queue. Without that boundary, a callback created in a main-actor context can
 inherit its isolation and crash when invoked off the main actor. Keep UI access
 inside the main-actor task.
 
+
+Event values are copied before the SDK retains them. Nested values, cyclic
+Foundation containers and total property size are bounded, and reentrant
+tracking from a context provider does not repeatedly invoke that provider.
+Do not mutate a collection concurrently while passing it to the SDK.
+
+Built-in event stores enforce a 1 MiB estimated retained-data ceiling and a
+4 MiB budget for pending event admission, in addition to `maxStoredEvents`.
+Events can be dropped under pressure, so this count is an upper limit rather
+than a retention guarantee. Oversized or deeply nested persisted JSON is
+discarded before parsing. The built-in transport bounds response bodies to
+1 MiB and limits concurrent requests; storage writes and automatic batch
+flush requests are coalesced during bursts. These limits protect the host
+while analytics delivery remains best effort.
+
 ## Privacy
 
 The SDK never reads the IDFA and never triggers an App Tracking Transparency prompt, and it collects no location, contacts, or other sensitive data. `identify()` is optional — without it, users are tracked under a random, app-scoped anonymous ID (`$anon_...`) that is not derived from the device.
