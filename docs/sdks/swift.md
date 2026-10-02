@@ -312,6 +312,14 @@ property keys using that prefix.
 
 ## Manual Flush
 
+The corrected SDK accepts `MGMFlushCompletion`, defined as
+`@MainActor @Sendable (Result<Void, MGMError>) -> Void`. It delivers results
+asynchronously on the main actor on every completion path. Event storage and
+network work remain in the background. Inline completions can update main-actor
+UI state; existing completion variables may need the `MGMFlushCompletion` type.
+To update another actor, create a task that calls that actor from inside the
+completion. Do not pass a closure isolated to that other actor directly.
+
 Events are automatically flushed periodically and when the app backgrounds. You can also trigger a manual flush:
 
 ```swift
