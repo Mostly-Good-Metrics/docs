@@ -151,8 +151,10 @@ properties are copied before queuing. Teardown invalidates old adapter work,
 so a late read or save cannot resurrect an abandoned event queue.
 
 If a native lifecycle listener cannot be removed, its callbacks become inert
-and the SDK avoids registering more listeners until cleanup succeeds. Manual
-tracking remains available during this lifecycle fallback.
+and the SDK avoids registering more listeners while removal is pending. A
+late successful removal can resume subscriptions; a failed removal disables
+further subscriptions for that process. Manual tracking remains available
+during this lifecycle fallback.
 
 ## Privacy
 
