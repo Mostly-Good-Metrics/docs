@@ -13,11 +13,13 @@ A lightweight Android SDK for tracking analytics events.
 
 ## Installation
 
+Use Android SDK **0.7.1 or later** for the background failure containment and bounded event storage described below.
+
 ### Gradle (Kotlin DSL)
 
 ```kotlin
 dependencies {
-    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.0")
+    implementation("com.github.Mostly-Good-Metrics:mostly-good-metrics-android-sdk:0.7.1")
 }
 ```
 
@@ -140,6 +142,32 @@ Every event automatically includes:
 | `user_id` | `"user_123"` | User ID (if set) |
 | `$device_type` | `"phone"` | Device type (phone, tablet, tv, watch) |
 | `$device_model` | `"Pixel 8"` | Device model |
+
+## Callback threads and failure handling
+
+`contextProvider` runs synchronously on the thread calling `track()`. It can run
+on background threads and concurrently. Return an immutable snapshot or use a
+synchronized store; do not read Android views directly from this callback.
+
+```kotlin
+MostlyGoodMetrics.flush { result ->
+    // This optional completion runs on the main thread.
+    result.onFailure { error -> /* report the delivery failure */ }
+}
+```
+
+Event delivery stays in the background. MGM contains ordinary exceptions from
+the provider, property conversion, background work, and the flush completion.
+Recursive property containers are bounded rather than recursively exhausting
+the stack. Cancellation of SDK coroutine work and fatal JVM errors retain their
+normal behavior. A completion that throws is contained.
+
+The built-in event stores also enforce a 1 MiB estimated event-data ceiling in
+addition to `maxStoredEvents`. Oldest events are dropped when either limit is
+reached; oversized events and damaged or oversized persisted queues may be
+discarded. Automatic flush requests are coalesced during bursts. These limits
+protect the host while offline or when storage is slow, so analytics delivery
+remains best effort.
 
 ## Privacy
 

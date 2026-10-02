@@ -13,16 +13,18 @@ Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and cr
 
 ## 2. Install
 
+Use **0.9.1 or later** for the SDK safety fixes; see the [React Native SDK guide](/sdks/react-native) for native failure handling.
+
 **Expo** (AsyncStorage is included):
 
 ```bash
-npm install @mostly-good-metrics/react-native
+npm install @mostly-good-metrics/react-native@^0.9.1
 ```
 
 **Bare React Native:**
 
 ```bash
-npm install @mostly-good-metrics/react-native @react-native-async-storage/async-storage
+npm install @mostly-good-metrics/react-native@^0.9.1 @react-native-async-storage/async-storage
 cd ios && pod install
 ```
 

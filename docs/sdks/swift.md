@@ -30,6 +30,8 @@ A lightweight Swift SDK for iOS, macOS, tvOS, watchOS, and visionOS.
 
 ## Installation
 
+Use Swift SDK **1.0.1 or later** for the bounded property, storage, and network failure handling described below. Swift 1.0.0 introduced the actor contracts covered in the migration guidance.
+
 ### Swift Package Manager
 
 Add to your `Package.swift`:
@@ -40,16 +42,16 @@ dependencies: [
 ]
 ```
 
-Or in Xcode: **File > Add Package Dependencies** and enter the repository URL.
+Or in Xcode: **File > Add Package Dependencies**, enter the repository URL, and select **Up to Next Major Version** starting at **1.0.1**.
 
 ### CocoaPods
 
-Install 1.0.0 from its Git tag:
+Install 1.0.1 from its Git tag:
 
 ```ruby
 pod 'MostlyGoodMetrics',
     :git => 'https://github.com/Mostly-Good-Metrics/mostly-good-metrics-swift-sdk.git',
-    :tag => '1.0.0'
+    :tag => '1.0.1'
 ```
 
 Then run `pod install`. The release workflow does not publish to the CocoaPods
@@ -306,8 +308,8 @@ Its returned values are evaluated per event and are not persisted as super prope
 
 #### Swift 6 migration
 
-When upgrading to 1.0.0, raise the Swift Package Manager requirement to
-`from: "1.0.0"`; a requirement starting at `0.x` does not include the new major
+When upgrading from `0.x`, raise the Swift Package Manager requirement to
+`from: "1.0.1"`; a requirement starting at `0.x` does not include the new major
 version. CocoaPods users should update the Git tag shown above.
 
 SDK versions through `0.11.0` do not enforce this callback contract. The explicit
@@ -360,11 +362,26 @@ queue. Without that boundary, a callback created in a main-actor context can
 inherit its isolation and crash when invoked off the main actor. Keep UI access
 inside the main-actor task.
 
+
+Event values are copied before the SDK retains them. Nested values, cyclic
+Foundation containers and total property size are bounded, and reentrant
+tracking from a context provider does not repeatedly invoke that provider.
+Do not mutate a collection concurrently while passing it to the SDK.
+
+Built-in event stores enforce a 1 MiB estimated retained-data ceiling and a
+4 MiB budget for pending event admission, in addition to `maxStoredEvents`.
+Events can be dropped under pressure, so this count is an upper limit rather
+than a retention guarantee. Oversized or deeply nested persisted JSON is
+discarded before parsing. The built-in transport bounds response bodies to
+1 MiB and limits concurrent requests; storage writes and automatic batch
+flush requests are coalesced during bursts. These limits protect the host
+while analytics delivery remains best effort.
+
 ## Privacy
 
 The SDK never reads the IDFA and never triggers an App Tracking Transparency prompt, and it collects no location, contacts, or other sensitive data. `identify()` is optional — without it, users are tracked under a random, app-scoped anonymous ID (`$anon_...`) that is not derived from the device.
 
-The next SDK release bundles an Apple privacy manifest; no extra MGM manifest setup is needed after upgrading. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the declarations and your app's privacy-label answers.
+Swift SDK 1.0.0 and later bundle an Apple privacy manifest with both Swift Package Manager and CocoaPods; no extra MGM manifest setup is needed. See [Apple privacy manifests and App Store labels](/features/privacy#apple-privacy-manifests-and-app-store-labels) for the declarations and your app's privacy-label answers.
 
 ### Opt-out
 

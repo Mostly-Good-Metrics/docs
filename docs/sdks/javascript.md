@@ -13,8 +13,10 @@ A lightweight JavaScript/TypeScript SDK for web applications.
 
 ## Installation
 
+Use JavaScript SDK **0.13.1 or later** for the exception containment and bounded event storage described below.
+
 ```bash
-npm install @mostly-good-metrics/javascript
+npm install @mostly-good-metrics/javascript@^0.13.1
 ```
 
 ## Quick Start
@@ -161,6 +163,40 @@ MostlyGoodMetrics.configure({
 `contextProvider` runs for every event. Its values override super properties;
 explicit event properties and MGM system properties take precedence. With
 `enableDebugLogging`, MGM warns when custom properties use reserved `$` keys.
+
+## Callback and failure handling
+
+`contextProvider` runs synchronously on the JavaScript caller. Return ordinary
+JSON-like values; asynchronous providers are unsupported. Provider exceptions
+are contained, unreadable property getters are omitted, and traversal of nested
+objects and arrays is bounded. Properties are copied at capture time, including
+super properties.
+
+Automatic batch, timer, and page-exit work handles storage and network failures
+internally. If an error callback returns a rejected promise, MGM observes that
+rejection without waiting for the callback to complete. Explicitly awaited
+operations retain their failure contract for custom adapters:
+
+```typescript
+try {
+  await MostlyGoodMetrics.flush();
+} catch (error) {
+  // Handle an unexpected failure from a custom storage or network adapter.
+}
+```
+
+Also handle promises returned by `clearPendingEvents()` and
+`getPendingEventCount()` when using custom adapters.
+
+Built-in event stores enforce a 1 MiB serialized event-data ceiling as well as
+`maxStoredEvents`. They drop the oldest events when either limit is reached and
+reject oversized persisted queues before parsing. Analytics can be dropped to
+protect the host during long offline periods; a custom storage adapter must
+enforce its own resource limits.
+
+Call `MostlyGoodMetrics.reset()` when tearing down the singleton. This stops
+its timers, removes browser hooks, and aborts its built-in network requests.
+Late responses from the destroyed instance cannot update its experiment cache.
 
 ## Privacy
 

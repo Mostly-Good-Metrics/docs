@@ -13,8 +13,10 @@ The official Capacitor SDK for hybrid mobile apps.
 
 ## Installation
 
+Use Capacitor SDK **0.5.1 or later** for the native storage, initialization, and lifecycle safeguards described below.
+
 ```bash
-npm install @mostly-good-metrics/capacitor
+npm install @mostly-good-metrics/capacitor@^0.5.1
 ```
 
 ### Required Peer Dependencies
@@ -121,6 +123,41 @@ Dynamic context overrides super properties; explicit event properties and MGM
 system properties take precedence. With `enableDebugLogging`, MGM warns when
 custom properties use reserved `$` keys.
 
+## Failure handling and teardown
+
+The SDK uses the JavaScript core with Capacitor storage and lifecycle adapters.
+Storage failures fall back to memory. Damaged persisted event queues are
+recovered while valid events are retained, and native listener cleanup handles
+both thrown errors and rejected removal promises.
+
+Call `MostlyGoodMetrics.destroy()` when tearing down the SDK. Pending
+initialization cannot recreate the client or overwrite a later configuration;
+listeners that finish registering after teardown are removed. `flush()` handles
+delivery errors internally and can be awaited to wait for the attempt to finish;
+resolution does not guarantee server acceptance.
+
+
+`ready(timeoutMs)` applies its deadline to native initialization as well as
+experiment readiness. An unavailable native operation times out after five
+seconds; later calls use current-process memory for that storage key. Writes
+are coalesced so a stalled plugin cannot build an unbounded chain. A timed-out
+write is not canceled by JavaScript, so the SDK avoids issuing newer writes
+that the old operation could overwrite. This fallback is not durable across
+process restarts. Unreadable or malformed native consent disables tracking
+until an explicit `optIn()` or `optOut()` choice.
+
+Startup calls and the built-in native event adapter each have a 1 MiB retained
+data budget in addition to event-count limits. Events can be dropped when
+those budgets are full or when persisted data is oversized or damaged. Event
+properties are copied before queuing. Teardown invalidates old adapter work,
+so a late read or save cannot resurrect an abandoned event queue.
+
+If a native lifecycle listener cannot be removed, its callbacks become inert
+and the SDK avoids registering more listeners while removal is pending. A
+late successful removal can resume subscriptions; a failed removal disables
+further subscriptions for that process. Manual tracking remains available
+during this lifecycle fallback.
+
 ## Privacy
 
 The SDK never collects advertising identifiers, location, or anything you don't explicitly pass to `track()` or `identify()`. `identify()` is optional — without it, users are tracked under a random, resettable anonymous ID (`$anon_...`).
@@ -133,7 +170,7 @@ MostlyGoodMetrics.optIn();       // resume tracking
 MostlyGoodMetrics.isOptedOut();  // current state
 ```
 
-While opted out, tracking calls are no-ops and queued (unsent) events are purged. The choice is persisted natively via Capacitor Preferences and survives restarts.
+While opted out, tracking calls are no-ops and queued (unsent) events are purged. The SDK attempts to persist the choice in Capacitor Preferences so it survives restarts when native storage is available.
 
 For consent-first apps (e.g. GDPR), start opted out and call `optIn()` after consent:
 

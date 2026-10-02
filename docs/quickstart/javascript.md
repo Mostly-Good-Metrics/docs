@@ -13,8 +13,10 @@ Sign up at [app.mostlygoodmetrics.com](https://app.mostlygoodmetrics.com) and cr
 
 ## 2. Install
 
+Use **0.13.1 or later** for the SDK safety fixes; see the [JavaScript SDK guide](/sdks/javascript) for failure handling.
+
 ```bash
-npm install @mostly-good-metrics/javascript
+npm install @mostly-good-metrics/javascript@^0.13.1
 ```
 
 ## 3. Initialize
