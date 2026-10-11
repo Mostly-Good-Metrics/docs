@@ -56,9 +56,10 @@ Assignments are sticky: the same ID always gets the same variant for a running e
 
 - `401` `{"error": "Invalid or missing API key"}`.
 - `429` `{"error": "Experiment request rate limit exceeded", "retry_after": 1}`
-  when one API key exceeds the short burst ceiling. Respect the `Retry-After`
-  response header before retrying. Official MGM SDKs cache assignments and
-  handle routine refreshes automatically.
+  when burst protection is enabled and one API key exceeds the short burst
+  ceiling. Respect the `Retry-After` response header before retrying. Keep a
+  previously cached assignment when available; do not silently treat a missing
+  assignment as the control variant.
 
 ## GET /v1/experiments/configs
 
@@ -71,7 +72,8 @@ curl "https://ingest.mostlygoodmetrics.com/v1/experiments/configs" \
 
 Authentication is the same project API key; the endpoint accepts no query parameters and ignores any sent.
 
-**Response** — `200 OK` with only running experiments:
+**Response** — `200 OK` with only running experiments. Successful responses may
+also be cached privately by the client for 60 seconds:
 
 ```json
 {
@@ -85,7 +87,7 @@ Authentication is the same project API key; the endpoint accepts no query parame
 }
 ```
 
-`id` is the experiment's UUID — it is what on-device bucketing hashes. To replicate the SDKs' deterministic assignment: take the first 8 bytes of `SHA-256("<experiment_uuid>:<user_id>")` as a big-endian unsigned 64-bit integer and pick `variants[bucket % variants.length]`. Same errors as above (`401` for a bad key).
+`id` is the experiment's UUID — it is what on-device bucketing hashes. To replicate the SDKs' deterministic assignment: take the first 8 bytes of `SHA-256("<experiment_uuid>:<user_id>")` as a big-endian unsigned 64-bit integer and pick `variants[bucket % variants.length]`. The endpoint has the same `401` and optional burst-protection `429` errors as above.
 
 ## Reporting exposure
 
