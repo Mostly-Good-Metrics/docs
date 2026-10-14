@@ -65,7 +65,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'HTTP API',
-      items: ['api/index', 'api/events', 'api/experiments'],
+      items: ['api/index', 'api/events', 'api/experiments', 'api/query-definition'],
     },
   ],
 };

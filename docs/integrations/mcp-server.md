@@ -46,6 +46,13 @@ Ad-hoc analysis works without saving anything: `execute_funnel`,
 so an assistant can answer "where do users drop off between signup and
 purchase?" in one call.
 
+Every tool describes its own parameters, so an assistant can discover the
+shape it needs without a round trip. The structured object behind
+`execute_query`, `create_query`, `update_query`, and `query_metrics` —
+metrics, dimensions, date ranges, and the `filters` object including custom
+property operators — is written out in full under
+[Query definition](/api/query-definition).
+
 ### Query several metrics efficiently
 
 Use `query_metrics` when an assistant needs several aggregate answers for the
