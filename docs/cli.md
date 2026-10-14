@@ -64,9 +64,16 @@ mgm funnels execute --steps "app_open,add_to_cart,purchase" --range 30d
 # Unique users by day, as JSON
 mgm queries execute --metric unique_users --group-by date --range 7d --json
 
+# Anything the flags don't cover, including custom property filters
+mgm queries execute --definition '{"metric":"count_events","group_by":"date","filters":{"prop:plan":{"op":"in","values":["pro","team"]}}}'
+
 # Create a production key restricted to one Apple bundle ID
 mgm keys create "iOS Production" --project prj_123 --environment production --allow com.example.app
 ```
+
+`--definition` takes the same object the individual flags build, and is the
+only way to reach country/region/city filters and custom property operators.
+Its keys are documented under [Query definition](/api/query-definition).
 
 `mgm init` and `mgm keys create` require an explicit access mode. Prefer one or
 more `--allow` values for Apple bundle IDs, Android package names/application
