@@ -149,10 +149,8 @@ an empty string. Clauses inside one `prop:` key are combined with OR; different
 ### What a `prop:` filter costs
 
 A `prop:` filter is answered from raw events rather than daily aggregates, so
-it is slower than a dimension filter. Identity metrics (`unique_users`,
-`unique_sessions`, `dau`) combined with a `prop:` filter are capped at 90
-days and return `unavailable` beyond that — narrow the date range, or use
-`count_events`.
+it is slower than a dimension filter. Prefer a dimension filter when one
+covers what you need.
 
 ## exclude_lifecycle_events
 
