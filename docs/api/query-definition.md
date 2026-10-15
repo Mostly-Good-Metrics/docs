@@ -146,6 +146,14 @@ Text operators are case-insensitive. `between` uses the first two entries of
 an empty string. Clauses inside one `prop:` key are combined with OR; different
 `prop:` keys are combined with AND.
 
+### What a `prop:` filter costs
+
+A `prop:` filter is answered from raw events rather than daily aggregates, so
+it is slower than a dimension filter. Identity metrics (`unique_users`,
+`unique_sessions`, `dau`) combined with a `prop:` filter are capped at 90
+days and return `unavailable` beyond that — narrow the date range, or use
+`count_events`.
+
 ## exclude_lifecycle_events
 
 Set to `true` to drop the events SDKs track automatically, which all start with
