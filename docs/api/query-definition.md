@@ -146,6 +146,12 @@ Text operators are case-insensitive. `between` uses the first two entries of
 an empty string. Clauses inside one `prop:` key are combined with OR; different
 `prop:` keys are combined with AND.
 
+### What a `prop:` filter costs
+
+A `prop:` filter is answered from raw events rather than daily aggregates, so
+it is slower than a dimension filter. Prefer a dimension filter when one
+covers what you need.
+
 ## exclude_lifecycle_events
 
 Set to `true` to drop the events SDKs track automatically, which all start with
