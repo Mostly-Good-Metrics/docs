@@ -89,16 +89,17 @@ does not remove completed goals from the response. A projected finish date is
 
 ## In the app
 
-Open **Goals** in a project and choose **New goal**. The app creates deadline
-`reach` goals for Unique users, Tracked events, or Revenue: choose the metric,
-goal value, and date. The Goals page shows each goal's current value, progress,
-status, projected finish, and pace, and lets you edit or delete it. Add a goal
-to the project dashboard with **Edit dashboard** → **Goal**.
+Open **Goals** in a project and choose **New goal**. Choose a source, any of the
+four goal shapes, and a deadline, rolling, or open-ended window. Sources include
+all events, unique users, recent individual events, Revenue when configured,
+and saved funnels, retention analyses, and queries. The builder shows a live
+preview and redirects a rolling threshold to an Alert because that combination
+has no finish line.
 
-For a specific event, funnel, retention analysis, saved query, rolling window,
-or a `growth`, `streak`, or `threshold` shape, use the CLI, MCP server, or REST
-API. Deleting a goal removes its dashboard widget but never deletes analytics
-events.
+The Goals page shows current value, progress, status, projected finish, pace,
+and charts when available. From there you can follow, edit, or delete a goal.
+Add one to the project dashboard with **Edit dashboard** → **Goal**. Deleting a
+goal removes its dashboard widget but never deletes analytics events.
 
 ## Create and read a goal
 
