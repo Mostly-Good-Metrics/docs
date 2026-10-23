@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # CLI
 
-The MostlyGoodMetrics CLI (`mgm`) manages projects, API keys, and dashboards, and runs funnels, retention, and queries from your terminal.
+The MostlyGoodMetrics CLI (`mgm`) manages projects, API keys, dashboards, and goals, and runs funnels, retention, and queries from your terminal.
 
 ## Install
 
@@ -51,6 +51,7 @@ Most project-scoped commands read the project from `.mgm.json` (created by `mgm 
 | `mgm retention list\|create\|execute\|delete` | Retention analyses |
 | `mgm queries list\|create\|execute\|delete` | Saved and ad-hoc queries |
 | `mgm experiments ...` | Manage and start/stop experiments |
+| `mgm goals list\|create\|show` | Create goals and read live progress and pace |
 | `mgm widgets list\|add\|remove\|reset` | Manage dashboard widgets |
 
 Run `mgm <command> --help` for full options.
@@ -69,11 +70,26 @@ mgm queries execute --definition '{"metric":"count_events","group_by":"date","fi
 
 # Create a production key restricted to one Apple bundle ID
 mgm keys create "iOS Production" --project prj_123 --environment production --allow com.example.app
+
+# Reach 1,000 purchases by a date, then read pace
+mgm goals create \
+  --name "Reach 1,000 purchases" \
+  --source '{"type":"event_count","event_name":"purchase_completed"}' \
+  --shape reach \
+  --goal '{"value":1000}' \
+  --window '{"type":"deadline","start_date":"2026-10-01","deadline":"2026-10-31"}'
+mgm goals list
+mgm goals show <goal-id>
 ```
 
 `--definition` takes the same object the individual flags build, and is the
 only way to reach country/region/city filters and custom property operators.
 Its keys are documented under [Query definition](/api/query-definition).
+
+Goals are in limited preview. Goal sources, shapes, shape-specific `goal`
+objects, and windows are documented in [Goals](/features/goals). `mgm goals
+list` reads bounded live snapshots, and `mgm goals show` reads a definition and
+its snapshot. Unavailable values remain unavailable instead of becoming zero.
 
 `mgm init` and `mgm keys create` require an explicit access mode. Prefer one or
 more `--allow` values for Apple bundle IDs, Android package names/application

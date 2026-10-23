@@ -26,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'features/funnels',
         'features/retention',
         'features/experiments',
+        'features/goals',
         'features/privacy',
       ],
     },
@@ -65,7 +66,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'HTTP API',
-      items: ['api/index', 'api/events', 'api/experiments', 'api/query-definition'],
+      items: ['api/index', 'api/events', 'api/experiments', 'api/query-definition', 'api/goals'],
     },
   ],
 };

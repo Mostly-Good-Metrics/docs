@@ -63,12 +63,12 @@ connected.
 |---|---|
 | `instrument-my-app` | Install an SDK and add safe event tracking |
 | `audit-instrumentation` | Diagnose missing, duplicated, or misleading data |
-| `analyze-metrics` | Answer product questions with real MGM data |
+| `analyze-metrics` | Answer product questions and check limited-preview goal progress with real MGM data |
 | `build-dashboard` | Create reusable queries and decision-focused widgets |
 | `funnel-doctor` | Find and segment conversion drop-offs |
 | `retention-cohorts` | Compare mature retention cohorts |
 | `run-experiment` | Plan and operate an MGM experiment |
-| `weekly-review` | Produce a compact week-over-week report |
+| `weekly-review` | Produce a compact week-over-week report, including goal pace when available |
 
 Repository-level instructions still apply. An MGM skill explains the product
 workflow; the target repository's `AGENTS.md` or `CLAUDE.md` explains its build,
