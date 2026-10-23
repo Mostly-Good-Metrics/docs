@@ -43,9 +43,10 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 | Alerts | `list_alerts`, `get_alert`, `create_alert`, `update_alert`, `delete_alert` |
 | Goals | `list_goals`, `get_goal`, `create_goal`, `update_goal`, `delete_goal`, `follow_goal`, `unfollow_goal` |
 
-Goals and Alerts are in limited preview. Their tools are advertised only when
-the signed-in user can access an organization with the corresponding feature
-enabled, and each call checks the selected project's organization again.
+Goals and Alerts are in limited preview behind the same `goals` feature flag.
+Their tools are advertised only when the signed-in user can access an
+organization with that flag enabled, and each call checks the selected
+project's organization again.
 
 Ad-hoc analysis works without saving anything: `execute_funnel`,
 `execute_retention`, and `execute_query` all accept inline definitions,

@@ -75,6 +75,7 @@ curl -X POST "https://api.mostlygoodmetrics.com/api/v2/projects/PROJECT_UUID/goa
 Create returns `201` with a `goal` key. List returns a `goals` array, and get
 and update return a `goal` key. Definitions include `following`, scoped to the
 calling user, and `reached_on`, which is an ISO 8601 date or `null`.
+Delete returns `200` with `{ "deleted": true }`.
 
 ```json
 {
@@ -103,6 +104,7 @@ calling user, and `reached_on`, which is an ISO 8601 date or `null`.
 snapshot route returns a `snapshot` object. Every snapshot uses `goal_id` for
 identity and can include:
 
+- `name`, `shape`, and `enabled`
 - `value`, `baseline`, `progress`, and `pace`
 - `projected_finish`, `status`, and `milestones`
 - `as_of`, `availability`, and `unavailable_reason`
@@ -111,7 +113,7 @@ One list request has a shared evaluation budget. Completed snapshots remain in
 the response if another evaluation fails or times out. Those rows use
 `availability: "unavailable"` or `"timeout"`. Missing identity totals are not
 reported as zero, growth has no percentage without a positive baseline, and a
-projection may be omitted when it would be misleading.
+projected finish date may be `null` when it would be misleading.
 
 ```json
 {
@@ -124,7 +126,13 @@ projection may be omitted when it would be misleading.
     "baseline": 100,
     "progress": 42,
     "pace": { "actual_per_day": 42, "required_per_day": 100, "variance_percent": -58 },
-    "projected_finish": null,
+    "projected_finish": {
+      "date": "2026-10-24",
+      "assumption": {
+        "method": "linear_run_rate",
+        "window": { "starts_on": "2026-10-01", "ends_on": "2026-10-10" }
+      }
+    },
     "status": "behind",
     "milestones": { "reached": [25], "crossed": [] },
     "as_of": "2026-10-10",
@@ -133,6 +141,9 @@ projection may be omitted when it would be misleading.
   }
 }
 ```
+
+For an available snapshot, `projected_finish` is an object with `date` and
+`assumption`; `date` can be `null` when MGM cannot make an honest projection.
 
 ## Following
 
