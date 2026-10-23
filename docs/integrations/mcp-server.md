@@ -40,6 +40,13 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 | Retention | `list_retentions`, `get_retention`, `create_retention`, `update_retention`, `delete_retention`, `execute_retention` |
 | Queries | `list_queries`, `get_query`, `create_query`, `update_query`, `delete_query`, `execute_query`, `query_metrics` |
 | Experiments | `list_experiments`, `get_experiment`, `create_experiment`, `update_experiment`, `delete_experiment`, `start_experiment`, `stop_experiment` |
+| Alerts | `list_alerts`, `get_alert`, `create_alert`, `update_alert`, `delete_alert` |
+| Goals | `list_goals`, `get_goal`, `create_goal`, `update_goal`, `delete_goal`, `follow_goal`, `unfollow_goal` |
+
+Goals and Alerts are in limited preview behind the same `goals` feature flag.
+Their tools are advertised only when the signed-in user can access an
+organization with that flag enabled, and each call checks the selected
+project's organization again.
 
 Ad-hoc analysis works without saving anything: `execute_funnel`,
 `execute_retention`, and `execute_query` all accept inline definitions,
@@ -52,6 +59,17 @@ shape it needs without a round trip. The structured object behind
 metrics, dimensions, date ranges, and the `filters` object including custom
 property operators — is written out in full under
 [Query definition](/api/query-definition).
+
+Goal definitions use `source`, `window`, `shape`, and a shape-specific `goal`
+object. ID-based tools take `goal_id`. `get_goal` returns the stored definition
+with a live snapshot containing `value`, `progress`, `pace`, status, milestones,
+and availability. `follow_goal` and `unfollow_goal` control the calling user's
+one-time reached notification. See [Goals](/features/goals) for the four shapes
+and six sources. Goal progress comes from events you already send; no SDK
+change is required.
+
+Alert tools and arguments are unchanged. ID-based Alert tools continue to take
+`alert_id`.
 
 ### Query several metrics efficiently
 
