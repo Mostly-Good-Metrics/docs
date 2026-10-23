@@ -98,8 +98,7 @@ has no finish line.
 
 The Goals page shows current value, progress, status, projected finish, pace,
 and charts when available. From there you can follow, edit, or delete a goal.
-Add one to the project dashboard with **Edit dashboard** → **Goal**. Deleting a
-goal removes its dashboard widget but never deletes analytics events.
+Deleting a goal never deletes analytics events.
 
 ## Create and read a goal
 
