@@ -53,7 +53,7 @@ connected.
 
 1. Restart the agent client if it was open during installation.
 2. Ask it to list its MGM skills or explicitly invoke `instrument-my-app`.
-3. Ask it to call `mgm_whoami` or list MGM projects; complete OAuth if prompted.
+3. Ask it to call `whoami` or `list_projects`; complete OAuth if prompted.
 4. Confirm the agent names the project it selected before it reads or changes
    saved analytics.
 
