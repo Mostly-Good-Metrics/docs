@@ -36,6 +36,7 @@ Completing OAuth alone does not always refresh a running agent's tool list.
 | Account & projects | `whoami`, `list_projects`, `create_project`, `list_api_keys`, `create_api_key`, `revoke_api_key` |
 | Dashboard | `get_dashboard`, `get_filters`, `list_widgets`, `add_widget`, `remove_widget`, `reset_widgets` |
 | Events | `list_events`, `list_event_types`, `define_event` |
+| User privacy | `export_user_data`, `erase_user_data` |
 | Funnels | `list_funnels`, `get_funnel`, `create_funnel`, `update_funnel`, `delete_funnel`, `execute_funnel` |
 | Retention | `list_retentions`, `get_retention`, `create_retention`, `update_retention`, `delete_retention`, `execute_retention` |
 | Queries | `list_queries`, `get_query`, `create_query`, `update_query`, `delete_query`, `execute_query`, `query_metrics` |
@@ -70,6 +71,25 @@ change is required.
 
 Alert tools and arguments are unchanged. ID-based Alert tools continue to take
 `alert_id`.
+
+### Per-user export and erasure
+
+`export_user_data(project_id, user_id, limit?, cursor?)` returns alias-expanded
+events, profiles, and experiment assignments. The page size defaults to 500 and
+accepts 1–1,000 events. When `pagination.has_more` is true, pass
+`pagination.next_cursor` back as `cursor`. The operation fails with a clear
+error if the identity resolves to more than 1,000 linked IDs.
+
+`erase_user_data(project_id, user_id, confirm)` deletes the alias-expanded
+events, daily activity rows, profiles, aliases, and experiment assignments from
+PostgreSQL, then queues ClickHouse event cleanup. `confirm` must be exactly
+`true`. It prevents an accidental MCP call; it is not an authorization control.
+
+Both tools require the signed-in user to be an owner or admin of the project's
+organization. Project ingestion keys are not accepted. Erasure is irreversible,
+so an assistant should call it only after the user explicitly confirms the
+request. See [Privacy & Data Controls](/features/privacy#per-user-export-and-erasure)
+for dashboard, REST, CLI, and data-retention details.
 
 ### Query several metrics efficiently
 

@@ -62,7 +62,31 @@ The API sends `Access-Control-Allow-Origin: *`, so browser clients can call it d
 
 ## Management API
 
-Goals are limited-preview management resources, not ingestion endpoints. Create
-and read them on the [Goals API](/api/goals) at
-`https://api.mostlygoodmetrics.com/api/v2`, with the user access token from
-`mgm login`.
+Management endpoints use `https://api.mostlygoodmetrics.com/api/v2` and a user
+access token from `mgm login`. Project ingestion keys cannot call management
+endpoints that require a signed-in user's permissions.
+
+### Per-user export and erasure
+
+Organization owners and admins can export or erase one end user's
+alias-expanded project data:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /projects/:project_id/users/export?user_id=:user_id&limit=:limit&cursor=:cursor` | Export events, profiles, and experiment assignments |
+| `POST /projects/:project_id/users/erase` with `{"user_id":"account-id"}` | Erase the user's project data |
+
+Export pages default to 500 events and accept a `limit` from 1–1,000. Continue
+with the returned `pagination.next_cursor` while `pagination.has_more` is true.
+Alias expansion is limited to 1,000 linked IDs; requests above that limit fail
+instead of returning or deleting partial data.
+
+Erasure returns `202 Accepted` after events, daily activity rows, profiles,
+aliases, and experiment assignments are deleted from PostgreSQL and the
+ClickHouse event-cleanup job is queued. The end-user ID is a filtered query or
+body parameter, not a path segment, so normal request-line logs do not retain
+it. See [Privacy & Data Controls](/features/privacy#per-user-export-and-erasure)
+for dashboard, MCP, CLI, and data-retention details.
+
+Goals are limited-preview management resources. Create and read them on the
+[Goals API](/api/goals).
