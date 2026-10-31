@@ -195,13 +195,91 @@ Country, region, and city are derived from the request IP at ingestion — the S
 
 Change it in your project's settings; it takes effect for new events.
 
-## Per-user data erasure
+## Per-user export and erasure
 
-To honor a deletion request (GDPR/CCPA), open the user's page in the dashboard and use the **erase user data** action (admin only). It resolves all aliased IDs for the user, then deletes their events, daily activity rows, profile, and ID aliases from Postgres, and their events from ClickHouse.
+Organization owners and admins can fulfill an end user's access or deletion
+request without contacting MGM support. All methods resolve aliases in both
+directions so the operation covers every linked user ID in the project. If an
+identity has more than 1,000 linked IDs, export and erasure stop with an error
+instead of returning or deleting a partial identity.
 
-Pre-computed historical aggregates (e.g. past chart totals) are not recomputed, and events sent before the user was ever identified under a never-linked anonymous ID can't be attributed to them.
+### Dashboard
 
-Pair this with the SDK-side "forget me" reset so the device stops sending linkable events.
+Open the end user's page in the dashboard. **Export user data** appears next to
+**Erase user data** in the user actions menu.
+
+The export contains the user's events, profiles, and experiment assignments.
+Erasure deletes events, daily activity rows, profiles, aliases, and experiment
+assignments from PostgreSQL. MGM then removes the user's ClickHouse events in a
+background job. Erasure is irreversible.
+
+### REST API
+
+Use an API v2 user access token. Project ingestion keys are rejected because
+they do not identify an owner or admin.
+
+```http
+GET https://api.mostlygoodmetrics.com/api/v2/projects/:project_id/users/export?user_id=:user_id&limit=500&cursor=:cursor
+Authorization: Bearer <user-access-token>
+```
+
+`limit` is optional, defaults to 500, and accepts 1–1,000 events per page. When
+`pagination.has_more` is true, pass `pagination.next_cursor` as `cursor` on the
+next request. The response also includes profiles, experiment assignments, the
+requested `user_id`, and all resolved IDs.
+
+```http
+POST https://api.mostlygoodmetrics.com/api/v2/projects/:project_id/users/erase
+Authorization: Bearer <user-access-token>
+Content-Type: application/json
+
+{"user_id":"account-id"}
+```
+
+Erasure returns `202 Accepted` after the PostgreSQL deletion commits and the
+ClickHouse cleanup job is queued. Both endpoints keep the end-user ID in a
+filtered query or body parameter, rather than the URL path, so it is not
+retained in normal request-line logs. See the [HTTP API](/api#per-user-export-and-erasure)
+for response and authorization details.
+
+### MCP
+
+The [MCP server](/integrations/mcp-server#per-user-export-and-erasure) exposes:
+
+```text
+export_user_data(project_id, user_id, limit?, cursor?)
+erase_user_data(project_id, user_id, confirm)
+```
+
+Both tools require the signed-in user to be an organization owner or admin.
+For erasure, `confirm` must be exactly `true`; this guards against an accidental
+tool call but does not replace authentication or authorization.
+
+### CLI
+
+The CLI uses the same signed-in user permissions:
+
+```bash
+mgm users export <user_id> --out user-export.json
+mgm users erase <user_id>
+```
+
+`mgm users erase` asks for confirmation. Use `--yes` only when the deletion has
+already been explicitly confirmed. `--out` is optional for exports.
+
+### Limits and device cleanup
+
+Pre-computed historical totals are not recomputed. Events sent before the user
+was identified under an anonymous ID that was never linked cannot be attributed
+to that user.
+
+`daily_property_aggregates` can retain raw property values without a user ID.
+Per-user erasure cannot determine which aggregate values came from the erased
+user, so it does not remove those rows. Do not put names, email addresses, or
+other personal data in analytics property values.
+
+Pair erasure with the SDK-side "forget me" reset so the device stops sending
+linkable events.
 
 ## Data preservation and analytics history
 
